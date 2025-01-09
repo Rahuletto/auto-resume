@@ -79,6 +79,7 @@ class LinkedinProfile(BaseModel):
     urn: str
     firstName: str
     lastName: str
+    educations: List[LinkedinEducation]
     username: str
     summary: str
     headline: str
@@ -96,6 +97,7 @@ class LinkedinProfile(BaseModel):
         obj['languages'] = [Language(**lang) for lang in obj.get('languages', [])]
         obj['skills'] = [Skill(**skill) for skill in obj.get('skills', [])]
         obj['position'] = [Position(**pos) for pos in obj.get('position', [])]
+        obj['educations'] = [LinkedinEducation(**edu) for edu in obj.get('educations', [])]
         obj['certifications'] = [Certification(**cert) for cert in obj.get('certifications', [])]
         obj['projects'] = LinkedinProject(**obj.get('projects', {}))
         return super().parse_obj(obj)

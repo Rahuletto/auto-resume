@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from models.linkedin import *
 from models.github import *
 import calendar
+from datetime import datetime
 
 load_dotenv()
 
@@ -83,7 +84,7 @@ def update_latex_template(data: GithubResponse, linkedin_data: LinkedinProfile) 
             f"\\begin{{itemize}}\n"
             + "".join([f"\\item {cleanData(point.strip())}\n" for point in next((proj.description for proj in linkedin_data.projects.items if proj.title.lower() == repo.name.lower()), 'No description available.').replace("%", "\\%").split('- ')[1:]]) +
             f"\\end{{itemize}}\n"
-            for repo in repositories[:3]
+            for repo in repositories[:2]
         ])
 
         languages = set() 
@@ -96,10 +97,18 @@ def update_latex_template(data: GithubResponse, linkedin_data: LinkedinProfile) 
         experiences = linkedin_data.position
         certifications = linkedin_data.certifications
         speaks = linkedin_data.languages
+        education = linkedin_data.educations
         
         def month_number_to_abbr(month_number: int) -> str:
             return calendar.month_abbr[month_number]
-
+        
+        current_year = datetime.now().year
+        education_entries = "".join([
+            f"\\textbf{{{cleanData(edu.degree.split(' - ')[1]).replace('B', 'B.').replace('M', 'M.')}}} {edu.fieldOfStudy} \\hfill {f'{month_number_to_abbr(edu.end.month)} {edu.end.year}' if edu.end and edu.end.year < current_year else f'Expected {edu.end.year}'}\\\\\n"
+            f"\\href{{{edu.url}}}{{{cleanData(edu.schoolName.split(' (')[0])}}} \\hfill \\textit{{Grade: {cleanData(edu.grade)}}}\n"
+            for edu in education
+        ])
+        
         experience_entries = "".join([
             f"\\textbf{{{cleanData(exp.title)}}} \\hfill {month_number_to_abbr(exp.start.month)} {exp.start.year} - "
             f"{f'{month_number_to_abbr(exp.end.month)} {exp.end.year}' if exp.end and exp.end.year != 0 else 'Present'}\\\\\n"
@@ -122,6 +131,7 @@ def update_latex_template(data: GithubResponse, linkedin_data: LinkedinProfile) 
 
         updated_content = template_content.replace("<REPOSITORIES>", repo_entries)
         updated_content = updated_content.replace("<EXPERIENCES>", experience_entries)
+        updated_content = updated_content.replace("<EDUCATION>", education_entries)
         updated_content = updated_content.replace("<CERTIFICATIONS>", certification_entries)
         updated_content = updated_content.replace("<GITHUB_LANGS>", github_languages)
         updated_content = updated_content.replace("<SPEAKS>", speaks_entries)
