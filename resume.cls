@@ -21,7 +21,7 @@
 \ProvidesClass{resume}[2010/07/10 v0.9 Resume class]
 
 \LoadClass[a4paper]{article}
-
+\usepackage{ragged2e}
 \usepackage[parfill]{parskip} % Remove paragraph indentation
 \usepackage{array} % Required for boldface (\bf and \bfseries) tabular columns
 \usepackage{ifthen} % Required for ifthenelse statements
