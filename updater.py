@@ -281,8 +281,10 @@ def update_latex_template(data: GithubResponse, linkedin_data: LinkedinProfile) 
         updated_content = updated_content.replace("<LOCATION>", data.viewer.location if data.viewer.location else "")
         updated_content = updated_content.replace("<EMAIL>", data.viewer.email if data.viewer.email else "")
         updated_content = updated_content.replace("<LINKEDIN>", f"linkedin.com/in/{linkedin_data.username}" if linkedin_data.username else "")
+        updated_content = updated_content.replace("<LINKEDIN_TXT>", f"linkedin.com/in/{linkedin_data.username}" if linkedin_data.username else "")
         github_url = f"github.com/{data.viewer.login}" if data.viewer.login else ""
         updated_content = updated_content.replace("<GITHUB>", github_url)
+        updated_content = updated_content.replace("<GITHUB_TXT>", f"github/{data.viewer.login}" if data.viewer.login else "")
         website_url = data.viewer.websiteUrl if data.viewer.websiteUrl else ""
         updated_content = updated_content.replace("<URL>", website_url.replace("https://", "").replace("http://", ""))
         # updated_content = updated_content.replace("<SUMMARY>", cleanData(linkedin_data.summary))

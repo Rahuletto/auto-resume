@@ -2,6 +2,8 @@
 
 This project is designed to automatically update a LaTeX resume template with data fetched from GitHub and LinkedIn. It uses the GitHub GraphQL API and a LinkedIn data scraper API to gather information about repositories, languages, experiences, certifications, and more.
 
+![Score](/score.png)
+
 ## Features
 
 - Fetches GitHub repository data including name, URL, languages, stargazer count, and description.
