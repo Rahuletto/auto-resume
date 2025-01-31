@@ -77,7 +77,7 @@ jobs:
 
     # Step 10: Upload PDF and LaTeX files
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: resume
         path: |
