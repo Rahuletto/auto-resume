@@ -216,14 +216,15 @@ def update_latex_template(data: GithubResponse, linkedin_data: LinkedinProfile) 
 
             # Build repository entry
             entry = [
-                f"\\textbf{{\\href{{{repo.url}}}{{{repo.name}}}}} | \\textbf{{({languages})}}",
+                f"\\textbf{{\\href{{{repo.url}}}{{{repo.name}}}}} \\(\\mid\\) \\textbf{{{languages}}}",
                 "\\begin{itemize}\n\\itemsep -3pt{}"
             ]
 
             # Add bullet points
             for point in bullet_points:
-                entry.append(f"\\item {cleanData(point.strip()).split("\n---\n")[0].replace("%", "\\%")}")
-
+                point_text = point.strip().split("\n---\n")[0]
+                point_text = re.sub(r'"([^"]+)"', r'\\textbf{\1}', point_text)
+                entry.append(f"\\item {cleanData(point_text).replace('%', '\\%')}")
             entry.append("\\end{itemize}")
             repo_entries.append('\n'.join(entry))
 
