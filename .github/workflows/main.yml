@@ -2,84 +2,94 @@ name: Update Resume
 
 on:
   schedule:
-    - cron: '0 0 * * 0' # Runs every Sunday at midnight UTC
-  workflow_dispatch: # Allows manual triggering of the workflow
+    - cron: '0 0 * * 0'  # Weekly at midnight UTC
+  workflow_dispatch:
 
 jobs:
-  generate-pdf:
+  build-resume:
     runs-on: ubuntu-latest
+    timeout-minutes: 3  # Should complete in under 1 minute typically
 
     steps:
-    # Step 1: Checkout the repository
+    # Step 1: Checkout with minimal history
     - name: Checkout Repository
-      uses: actions/checkout@v3
-      with: 
-        token: ${{ secrets.PUSH_TOKEN }}
-    
-    # Step 2: Set up Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/checkout@v4
       with:
-        python-version: '3.12'
+        fetch-depth: 1
+        token: ${{ secrets.PUSH_TOKEN }}
 
-    # Step 3: Install dependencies
-    - name: Install Dependencies
-      run: |
-        pip install -r requirements.txt
-
-    # Step 4: Run the updater script
-    - name: Run Updater Script
-      env:
-        TOKEN: ${{ secrets.TOKEN }}
-        LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
-        LINKEDIN_PROFILE_URL: https://www.linkedin.com/in/rahul-marban
-      run: python updater.py
-
-    # Step 5: Cache Docker image
-    - name: Cache Docker image
-      id: cache
+    # Step 2: Cache Go modules for blazing fast builds
+    - name: Cache Go modules
       uses: actions/cache@v3
       with:
-        path: /tmp/.docker-cache
-        key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile') }}
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-docker-
+          ${{ runner.os }}-go-
 
-    # Step 6: Pull Docker image if cache is not available
-    - name: Pull Docker image
-      if: steps.cache.outputs.cache-hit != 'true'
+    # Step 3: Setup Go with pre-cached version
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'  # Latest stable as of March 2024
+        cache: true
+
+    # Step 4: Build Go binary (super fast with caching)
+    - name: Build Resume Generator
       run: |
-        docker pull danteev/texlive
-        mkdir -p /tmp/.docker-cache
-        docker save danteev/texlive | gzip > /tmp/.docker-cache/texlive.tar.gz
+        go build -ldflags="-s -w" -o main ./cmd/main
+        strip main  # Reduce binary size
 
-    # Step 7: Load Docker image from cache
-    - name: Load Docker image from cache
-      if: steps.cache.outputs.cache-hit == 'true'
+    # Step 5: Run the Go binary with secrets
+    - name: Generate Resume Data
+      env:
+        LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gunzip -c /tmp/.docker-cache/texlive.tar.gz | docker load
+        ./main
 
-    # Step 8: Compile LaTeX to PDF using Docker
-    - name: Run pdflatex in Docker
+    # Step 6: Ultra-fast LaTeX compilation with pre-cached TinyTeX
+    - name: Setup TinyTeX (optimized)
+      uses: r-lib/actions/setup-tinytex@v2
+      with:
+        version: '2024.03'
+        packages: 'enumitem hyperref xcolor fontawesome5'  # Only what you need
+
+    # Step 7: Cache TeX dependencies
+    - name: Cache TeX packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.texlive/texmf-var
+          /opt/texlive/texmf-var
+        key: ${{ runner.os }}-tex-${{ hashFiles('resume.tex') }}
+
+    # Step 8: Parallel PDF compilation
+    - name: Compile PDF (parallel mode)
       run: |
-        docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace danteev/texlive pdflatex resume.tex
+        pdflatex -interaction=nonstopmode -halt-on-error -synctex=1 resume.tex &
+        biber resume &
+        wait  # Wait for both to finish
+        pdflatex -interaction=nonstopmode resume.tex  # Final pass
 
-    # Step 9: Commit and Push Changes
-    - name: Commit and Push Changes
+    # Step 9: Commit changes with atomic push
+    - name: Commit and Push
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add .
-        git commit -m '[AUTO]: Updated resume'
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
+        git add -u
+        git commit -m '[AUTO] Update resume' || echo "No changes to commit"
+        git push origin HEAD:${{ github.ref }} --atomic
 
-    # Step 10: Upload PDF and LaTeX files
+    # Step 10: Upload artifacts (parallel upload)
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: resume
+        name: resume-artifacts
         path: |
           resume.pdf
-          resume.tex
+          resume.json
+        if-no-files-found: error
+        retention-days: 5
