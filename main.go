@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 )
 
@@ -410,10 +410,10 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 }
 
 func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatalf("Error loading .env file")
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
 	var ghData *models.GithubResponse
 	var lkData *models.LinkedinProfile
