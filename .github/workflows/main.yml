@@ -52,10 +52,10 @@ jobs:
         fi
         export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
         tlmgr install enumitem hyperref xcolor biblatex ragged2e parskip
-        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        pdflatex -interaction=nonstopmode resume.tex
         biber resume
-        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
-        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        pdflatex -interaction=nonstopmode resume.tex
+
         
     - name: Cache TeX packages
       uses: actions/cache@v3
