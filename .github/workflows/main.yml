@@ -9,6 +9,9 @@ jobs:
   build-resume:
     runs-on: ubuntu-latest
     timeout-minutes: 3 
+    env:
+      LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - name: Checkout Repository
@@ -36,8 +39,8 @@ jobs:
     - name: Create .env file
       run: |
         touch .env
-        echo "LINKEDIN_API_KEY=${{ secrets.LINKEDIN_API_KEY }}" >> .env
-        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> .env
+        echo "LINKEDIN_API_KEY=$LINKEDIN_API_KEY" >> .env
+        echo "GITHUB_TOKEN=$GITHUB_TOKEN" >> .env
         cat .env
         export $(grep -v '^#' .env | xargs)
         go run main.go
