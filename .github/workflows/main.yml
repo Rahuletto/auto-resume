@@ -54,27 +54,35 @@ jobs:
           /opt/texlive/texmf-var
         key: ${{ runner.os }}-tex-${{ hashFiles('resume.tex') }}
 
-    - name: Compile PDF (parallel mode)
+    - name: Install TeX Live
       run: |
-        pdflatex -interaction=nonstopmode -halt-on-error -synctex=1 resume.tex &
-        biber resume &
-        wait  # Wait for both to finish
-        pdflatex -interaction=nonstopmode resume.tex  # Final pass
+        sudo apt-get update
+        sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-latex-recommended texlive-xetex biber
 
-    - name: Commit and Push
+    - name: Compile LaTeX Resume
+      run: |
+        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        biber resume
+        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+
+    - name: Commit and Push Changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add -u
-        git commit -m '[AUTO] Update resume' || echo "No changes to commit"
-        git push origin HEAD:${{ github.ref }} --atomic
+        git add .
+        git commit -m '[AUTO]: Updated resume'
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: resume-artifacts
+        name: resume
         path: |
           resume.pdf
-          resume.json
+          resume.tex
         if-no-files-found: error
         retention-days: 5
