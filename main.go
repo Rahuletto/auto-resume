@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 )
 
