@@ -252,15 +252,20 @@ def update_latex_template(data: GithubResponse, linkedin_data: LinkedinProfile) 
             for edu in education
         ])
         
+        def cleanData(text):
+            if not text:
+                return ""
+            return re.sub(r'([&%$#_{}\\])', r'\\\1', text)
+
         experience_entries = "".join([
             f"\\textbf{{{cleanData(exp.title)}}} \\hfill {month_number_to_abbr(exp.start.month)} {exp.start.year} - "
             f"{f'{month_number_to_abbr(exp.end.month)} {exp.end.year}' if exp.end and exp.end.year != 0 else 'Present'}\\\\\n"
             f"{cleanData('SIIC Chennai') if cleanData(exp.companyName) == 'SRM Innovation and Incubation Centre' else cleanData(exp.companyName)} \\hfill \\textit{{{cleanData(exp.location)}}}\n"
             + (f"\n{cleanData(exp.description.split('- ')[0])}\n"
-               f"\\begin{{itemize}}\n\\itemsep -3pt{{}}\n"
-               + "".join([f"\\item {cleanData(point.strip())}\n" for point in exp.description.replace("%", "\\%").split('- ')[1:]]) +
-               f"\\end{{itemize}}\n"
-               if "- " in exp.description else f"\n{cleanData(exp.description)}\n\n")
+            f"\\begin{{itemize}}\n\\itemsep -3pt{{}}\n"
+            + "".join([f"\\item {cleanData(point.strip())}\n" for point in exp.description.replace("%", "\\%").split('- ')[1:]]) +
+            f"\\end{{itemize}}\n"
+            if "- " in exp.description else f"\n{cleanData(exp.description)}\n\n")
             for exp in experiences
         ])
 
