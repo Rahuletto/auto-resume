@@ -24,7 +24,6 @@ const (
 	OutputFile         = "resume.tex"
 	GithubDataFile     = "github_data.json"
 	LinkedinDataFile   = "linkedin_data.json"
-	PdfOutputFile      = "resume.pdf"
 )
 
 var (
@@ -64,7 +63,7 @@ func fetchGithubData(query string) (*models.GithubResponse, error) {
 			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse GitHub cache file: %v", err)}
 		}
 	} else {
-		githubToken := os.Getenv("GITHUB_TOKEN")
+		githubToken := os.Getenv("TOKEN")
 		if githubToken == "" {
 			return nil, errors.ApiError{Message: "GitHub personal access token is not set in environment variables"}
 		}

@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 3 
     env:
       LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TOKEN: ${{ secrets.TOKEN }}
 
     steps:
     - name: Checkout Repository
