@@ -13,7 +13,7 @@ This project is designed to automatically update a LaTeX resume template with da
 
 ## Requirements
 
-- Python 3.8+
+- Golang 1.24+
 - GitHub Personal Access Token
 - RapidAPI Key (Linkedin scraping)
 
@@ -26,17 +26,10 @@ This project is designed to automatically update a LaTeX resume template with da
     cd auto-resume
     ```
 
-2. **Create a virtual environment and activate it:**
-
-    ```sh
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-    ```
-
 3. **Install the required packages:**
 
     ```sh
-    pip install -r requirements.txt
+    go mod tidy
     ```
 
 4. **Set up environment variables:**
@@ -52,7 +45,7 @@ This project is designed to automatically update a LaTeX resume template with da
 5. **Run the script:**
 
     ```sh
-    python updater.py
+    go run main.go
     ```
 
     This will fetch the data from GitHub and LinkedIn, update the LaTeX template, and generate the updated resume.
