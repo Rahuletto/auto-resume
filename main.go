@@ -64,7 +64,7 @@ func fetchGithubData(query string) (*models.GithubResponse, error) {
 			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse GitHub cache file: %v", err)}
 		}
 	} else {
-		githubToken := os.Getenv("TOKEN")
+		githubToken := os.Getenv("GITHUB_TOKEN")
 		if githubToken == "" {
 			return nil, errors.ApiError{Message: "GitHub personal access token is not set in environment variables"}
 		}

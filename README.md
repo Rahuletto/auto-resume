@@ -37,7 +37,7 @@ This project is designed to automatically update a LaTeX resume template with da
     Create a [.env](https://dotenvx.com/docs/env-file) file in the root directory of the project and add the following environment variables:
 
     ```env
-    TOKEN=your_github_personal_access_token
+    GITHUB_TOKEN=your_github_personal_access_token
     LINKEDIN_API_KEY=your_linkedin_scraper_key
     LINKEDIN_PROFILE_URL=your_linkedin_profile_url
     ```
