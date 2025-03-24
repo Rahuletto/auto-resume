@@ -39,9 +39,6 @@ jobs:
         echo "LINKEDIN_API_KEY=${{ secrets.LINKEDIN_API_KEY }}" >> .env
         echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> .env
         cat .env
-      
-    - name: Generate Resume Data
-      run: |
         go run main.go
       
     - name: Delete .env file
