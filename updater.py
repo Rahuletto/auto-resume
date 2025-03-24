@@ -29,8 +29,15 @@ local = True
 def cleanData(text):
     if not text:
         return ""
-    return re.sub(r'([&%$#_{}\\])', r'\\\1', text)
-
+    return (text.replace("&", "\\&")
+                .replace("%", "\\%")
+                .replace("$", "\\$")
+                .replace("#", "\\#")
+                .replace("_", "\\_")
+                .replace("{", "\\{")
+                .replace("}", "\\}")
+                .replace("\\", "\\textbackslash{}"))
+                
 class APIError(Exception):
     """Custom exception for API related errors"""
     pass
