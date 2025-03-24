@@ -36,12 +36,6 @@ jobs:
         go-version: '1.22'  # Latest stable as of March 2024
         cache: true
 
-    # Step 4: Build Go binary (super fast with caching)
-    - name: Build Resume Generator
-      run: |
-        go build -ldflags="-s -w" -o main ./cmd/main
-        strip main  # Reduce binary size
-
     # Step 5: Run the Go binary with secrets
     - name: Generate Resume Data
       env:
