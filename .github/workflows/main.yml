@@ -2,23 +2,21 @@ name: Resumator
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # Weekly at midnight UTC
+    - cron: '0 0 * * 0'
   workflow_dispatch:
 
 jobs:
   build-resume:
     runs-on: ubuntu-latest
-    timeout-minutes: 3  # Should complete in under 1 minute typically
+    timeout-minutes: 3 
 
     steps:
-    # Step 1: Checkout with minimal history
     - name: Checkout Repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 1
         token: ${{ secrets.PUSH_TOKEN }}
 
-    # Step 2: Cache Go modules for blazing fast builds
     - name: Cache Go modules
       uses: actions/cache@v3
       with:
@@ -29,29 +27,25 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
 
-    # Step 3: Setup Go with pre-cached version
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.22'  # Latest stable as of March 2024
+        go-version: '1.24' 
         cache: true
 
-    # Step 5: Run the Go binary with secrets
     - name: Generate Resume Data
       env:
         LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        ./main
+        go run main.go
 
-    # Step 6: Ultra-fast LaTeX compilation with pre-cached TinyTeX
     - name: Setup TinyTeX (optimized)
       uses: r-lib/actions/setup-tinytex@v2
       with:
         version: '2024.03'
-        packages: 'enumitem hyperref xcolor fontawesome5'  # Only what you need
+        packages: 'enumitem hyperref xcolor'
 
-    # Step 7: Cache TeX dependencies
     - name: Cache TeX packages
       uses: actions/cache@v3
       with:
@@ -60,7 +54,6 @@ jobs:
           /opt/texlive/texmf-var
         key: ${{ runner.os }}-tex-${{ hashFiles('resume.tex') }}
 
-    # Step 8: Parallel PDF compilation
     - name: Compile PDF (parallel mode)
       run: |
         pdflatex -interaction=nonstopmode -halt-on-error -synctex=1 resume.tex &
@@ -68,7 +61,6 @@ jobs:
         wait  # Wait for both to finish
         pdflatex -interaction=nonstopmode resume.tex  # Final pass
 
-    # Step 9: Commit changes with atomic push
     - name: Commit and Push
       run: |
         git config --global user.name 'github-actions[bot]'
@@ -77,7 +69,6 @@ jobs:
         git commit -m '[AUTO] Update resume' || echo "No changes to commit"
         git push origin HEAD:${{ github.ref }} --atomic
 
-    # Step 10: Upload artifacts (parallel upload)
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
