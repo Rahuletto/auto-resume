@@ -395,7 +395,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 
 	githubUrl := fmt.Sprintf("github.com/%s", githubData.Viewer.Login)
 	content = strings.ReplaceAll(content, "<GITHUB>", githubUrl)
-	content = strings.ReplaceAll(content, "<GITHUB_TXT>", fmt.Sprintf("github/%s", githubData.Viewer.Login))
+	content = strings.ReplaceAll(content, "<GITHUB_TXT>", fmt.Sprintf("github.com/%s", githubData.Viewer.Login))
 
 	websiteUrl := githubData.Viewer.WebsiteUrl
 	websiteUrl = strings.ReplaceAll(websiteUrl, "https://", "")
