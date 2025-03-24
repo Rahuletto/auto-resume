@@ -256,28 +256,29 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 				bulletPoints = parts[1:]
 			}
 		} else {
-			// description = "No description available."
 			languages = "No languages available."
 		}
 
 		entry := []string{
 			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}", repo.Url, repo.Name, languages),
-			"\\begin{itemize}\n\\itemsep -3pt{}",
 		}
 
-		for _, point := range bulletPoints {
-			pointText := strings.TrimSpace(point)
-			if strings.Contains(pointText, "\n---\n") {
-				pointText = strings.Split(pointText, "\n---\n")[0]
+		if len(bulletPoints) > 0 {
+			entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
+			for _, point := range bulletPoints {
+				pointText := strings.TrimSpace(point)
+				if strings.Contains(pointText, "\n---\n") {
+					pointText = strings.Split(pointText, "\n---\n")[0]
+				}
+
+				re := regexp.MustCompile(`"([^"]+)"`)
+				pointText = re.ReplaceAllString(pointText, "\\textbf{$1}")
+
+				entry = append(entry, fmt.Sprintf("\\item %s", cleanData(pointText)))
 			}
-
-			re := regexp.MustCompile(`"([^"]+)"`)
-			pointText = re.ReplaceAllString(pointText, "\\textbf{$1}")
-
-			entry = append(entry, fmt.Sprintf("\\item %s", cleanData(pointText)))
+			entry = append(entry, "\\end{itemize}")
 		}
 
-		entry = append(entry, "\\end{itemize}")
 		repoEntries = append(repoEntries, strings.Join(entry, "\n"))
 	}
 
@@ -325,13 +326,14 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 		if strings.Contains(exp.Description, "- ") {
 			descParts := strings.Split(exp.Description, "- ")[:3]
 			entry = append(entry, fmt.Sprintf("\n%s\n", cleanData(descParts[0])))
-			entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
 
-			for _, point := range descParts[1:] {
-				entry = append(entry, fmt.Sprintf("\\item %s", cleanData(strings.TrimSpace(point))))
+			if len(descParts) > 1 {
+				entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
+				for _, point := range descParts[1:] {
+					entry = append(entry, fmt.Sprintf("\\item %s", cleanData(strings.TrimSpace(point))))
+				}
+				entry = append(entry, "\\end{itemize}")
 			}
-
-			entry = append(entry, "\\end{itemize}")
 		} else {
 			entry = append(entry, fmt.Sprintf("\n%s\n", cleanData(exp.Description)))
 		}

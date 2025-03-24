@@ -8,7 +8,7 @@ on:
 jobs:
   build-resume:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 3 
     env:
       LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,56 +36,44 @@ jobs:
         go-version: '1.24' 
         cache: true
 
-    - name: Run program with verbose logging
-      run: |
-        set -x
-        go run main.go || { echo "Go program execution failed"; exit 1; }
-      shell: bash
+    - name: Run program
+      run: go run main.go
 
-    - name: Cache Docker image
-      id: cache
+    - name: Cache TinyTeX
       uses: actions/cache@v3
       with:
-        path: /tmp/.docker-cache
-        key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile') }}
-        restore-keys: |
-          ${{ runner.os }}-docker-
+        path: ~/.TinyTeX
+        key: ${{ runner.os }}-tinytex-2024
 
-    - name: Pull Docker image with logging
-      if: steps.cache.outputs.cache-hit != 'true'
+    - name: Install TinyTeX
       run: |
-        set -x
-        docker pull danteev/texlive || { echo "Failed to pull Docker image"; exit 1; }
-        mkdir -p /tmp/.docker-cache
-        docker save danteev/texlive | gzip > /tmp/.docker-cache/texlive.tar.gz
-      shell: bash
+        if [ ! -d "$HOME/.TinyTeX" ]; then
+          curl -fsSL "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+        fi
+        export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+        tlmgr install enumitem hyperref xcolor biblatex ragged2e parskip
+        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        biber resume
+        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        
+    - name: Cache TeX packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.texlive/texmf-var
+        key: ${{ runner.os }}-tex-${{ hashFiles('resume.tex') }}
 
-    - name: Load Docker image from cache with logging
-      if: steps.cache.outputs.cache-hit == 'true'
+    - name: Commit and Push Changes
       run: |
-        set -x
-        gunzip -c /tmp/.docker-cache/texlive.tar.gz | docker load || { echo "Failed to load Docker image from cache"; exit 1; }
-      shell: bash
-
-    - name: Run pdflatex in Docker with debug output
-      run: |
-        set -x
-        docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace danteev/texlive pdflatex resume.tex || { echo "pdflatex execution failed"; cat resume.log || echo "No log file found"; exit 1; }
-      shell: bash
-
-    - name: Commit and Push Changes with logging
-      run: |
-        set -x
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add .
         git commit -m '[AUTO]: Updated resume' || echo "No changes to commit"
-        git push || { echo "Git push failed"; exit 1; }
+        git push
       env:
         GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
-      shell: bash
 
-    - name: Upload Artifacts with logging
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: resume
