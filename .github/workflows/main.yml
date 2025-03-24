@@ -51,10 +51,7 @@ jobs:
           curl -fsSL "https://yihui.org/tinytex/install-bin-unix.sh" | sh
         fi
         export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
-        tlmgr install biber enumitem hyperref xcolor biblatex ragged2e parskip
-        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
-        biber resume
-        pdflatex -interaction=nonstopmode -halt-on-error resume.tex
+        tlmgr install enumitem hyperref xcolor biblatex ragged2e parskip
         pdflatex -interaction=nonstopmode -halt-on-error resume.tex
         
     - name: Cache TeX packages
