@@ -35,19 +35,19 @@ jobs:
 
     - name: Create .env file
       run: |
+        touch .env
         echo "LINKEDIN_API_KEY=${{ secrets.LINKEDIN_API_KEY }}" >> .env
         echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> .env
+        cat .env
       
     - name: Generate Resume Data
       run: |
-        export $(grep -v '^#' .env | xargs) 
         go run main.go
       
     - name: Delete .env file
       if: always()
       run: rm -f .env
       
-
     - name: Setup TinyTeX (optimized)
       uses: r-lib/actions/setup-tinytex@v2
       with:
