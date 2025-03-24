@@ -26,6 +26,11 @@ GITHUB_DATA_FILE = "github_data.json"
 LINKEDIN_DATA_FILE = "linkedin_data.json"
 local = True
 
+def cleanData(text):
+    if not text:
+        return ""
+    return re.sub(r'([&%$#_{}\\])', r'\\\1', text)
+
 class APIError(Exception):
     """Custom exception for API related errors"""
     pass
@@ -251,11 +256,6 @@ def update_latex_template(data: GithubResponse, linkedin_data: LinkedinProfile) 
             f"\\href{{{edu.url}}}{{{cleanData(edu.schoolName.split(' (')[0])}}} \\hfill \\textit{{CGPA: {cleanData(edu.grade)}}}\n"
             for edu in education
         ])
-        
-        def cleanData(text):
-            if not text:
-                return ""
-            return re.sub(r'([&%$#_{}\\])', r'\\\1', text)
 
         experience_entries = "".join([
             f"\\textbf{{{cleanData(exp.title)}}} \\hfill {month_number_to_abbr(exp.start.month)} {exp.start.year} - "
