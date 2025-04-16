@@ -359,8 +359,8 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 		}
 
 		entry := []string{
-			fmt.Sprintf("\\textbf{%s} %s \\hfill %s\\\\", cleanData(degreeType), edu.FieldOfStudy, endDate),
 			fmt.Sprintf("\\href{%s}{%s} \\hfill \\textit{CGPA: %s}", edu.Url, cleanData(schoolName), cleanData(edu.Grade)),
+			fmt.Sprintf("\\textbf{%s} %s \\hfill %s\\\\", cleanData(degreeType), edu.FieldOfStudy, endDate),
 		}
 
 		educationEntries = append(educationEntries, strings.Join(entry, "\n"))
