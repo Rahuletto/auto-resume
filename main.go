@@ -222,19 +222,15 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	content := string(templateContent)
 	repositories := githubData.Viewer.Repositories
 	var repoEntries []string
-	projectNames := []string{"simply-djs", "ClassPro", "rocket"}
-	selectedRepos := []models.Repository{}
 
-	for _, name := range projectNames {
-		for _, repo := range repositories.Nodes {
-			if strings.EqualFold(repo.Name, name) {
-				selectedRepos = append(selectedRepos, repo)
-				break
-			}
-		}
+	maxRepos := len(repositories.Nodes)
+	if maxRepos > 3 {
+		maxRepos = 3
 	}
 
-	for _, repo := range selectedRepos {
+	for i := 0; i < maxRepos; i++ {
+		repo := repositories.Nodes[i]
+
 		var matchingProject *models.Project = nil
 		for j := range linkedinData.Projects.Items {
 			if strings.EqualFold(linkedinData.Projects.Items[j].Title, repo.Name) {
@@ -248,6 +244,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 
 		if matchingProject != nil {
 			descriptionParts := strings.Split(matchingProject.Description, "\n---\n")
+
 			if len(descriptionParts) > 1 {
 				languages = strings.TrimSpace(descriptionParts[1])
 			} else {
@@ -262,7 +259,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 		}
 
 		entry := []string{
-			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}", repo.Url, strings.Title(repo.Name), languages),
+			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}", repo.Url, repo.Name, languages),
 		}
 
 		if len(bulletPoints) > 0 {
