@@ -222,15 +222,19 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	content := string(templateContent)
 	repositories := githubData.Viewer.Repositories
 	var repoEntries []string
+	projectNames := []string{"simply-djs", "ClassPro", "rocket"}
+	selectedRepos := []Repo{}
 
-	maxRepos := len(repositories.Nodes)
-	if maxRepos > 3 {
-		maxRepos = 3
+	for _, name := range projectNames {
+		for _, repo := range repositories.Nodes {
+			if strings.EqualFold(repo.Name, name) {
+				selectedRepos = append(selectedRepos, repo)
+				break
+			}
+		}
 	}
 
-	for i := 0; i < maxRepos; i++ {
-		repo := repositories.Nodes[i]
-
+	for _, repo := range selectedRepos {
 		var matchingProject *models.Project = nil
 		for j := range linkedinData.Projects.Items {
 			if strings.EqualFold(linkedinData.Projects.Items[j].Title, repo.Name) {
@@ -244,7 +248,6 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 
 		if matchingProject != nil {
 			descriptionParts := strings.Split(matchingProject.Description, "\n---\n")
-
 			if len(descriptionParts) > 1 {
 				languages = strings.TrimSpace(descriptionParts[1])
 			} else {
@@ -280,6 +283,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 
 		repoEntries = append(repoEntries, strings.Join(entry, "\n"))
 	}
+
 
 	languageSet := make(map[string]bool)
 	for _, repo := range repositories.Nodes {
