@@ -223,7 +223,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	repositories := githubData.Viewer.Repositories
 	var repoEntries []string
 	projectNames := []string{"simply-djs", "ClassPro", "rocket"}
-	selectedRepos := []models.Repositories{}
+	selectedRepos := []models.Repository{}
 
 	for _, name := range projectNames {
 		for _, repo := range repositories.Nodes {
