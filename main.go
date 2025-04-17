@@ -262,7 +262,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 		}
 
 		entry := []string{
-			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}", repo.Url, repo.Name, languages),
+			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}", repo.Url, strings.Title(repo.Name), languages),
 		}
 
 		if len(bulletPoints) > 0 {
@@ -283,7 +283,6 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 
 		repoEntries = append(repoEntries, strings.Join(entry, "\n"))
 	}
-
 
 	languageSet := make(map[string]bool)
 	for _, repo := range repositories.Nodes {
