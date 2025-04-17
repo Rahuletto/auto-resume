@@ -62,8 +62,8 @@ jobs:
 
     - name: Commit and Push Changes
       run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git config --global user.name 'Rahul Marban'
+        git config --global user.email 'rahulmarban@gmail.com'
 
         # Configure token-based push
         git remote set-url origin https://x-access-token:${{ secrets.PUSH_TOKEN }}@github.com/${{ github.repository }}
