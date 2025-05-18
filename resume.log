@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.3)  11 MAY 2025 01:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.17)  18 MAY 2025 01:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **resume.tex
 (./resume.tex
 LaTeX2e <2024-11-01> patch level 2
-L3 programming layer <2025-04-14>
+L3 programming layer <2025-04-29>
 (./resume.cls
 Document Class: resume 2010/07/10 v0.9 Resume class
 (/home/runner/.TinyTeX/texmf-dist/tex/latex/base/article.cls
@@ -272,16 +272,16 @@ Overfull \hbox (30.0pt too wide) in paragraph at lines 10--10
 {/home/runner/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./resume.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
-L3 programming layer <2025-04-14>
+L3 programming layer <2025-04-29>
  ***********
 Package rerunfilecheck Info: File `resume.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8620 strings out of 471589
- 134915 string characters out of 5520870
- 540005 words of memory out of 5000000
- 35132 multiletter control sequences out of 15000+600000
+ 8620 strings out of 471571
+ 134915 string characters out of 5520609
+ 540138 words of memory out of 5000000
+ 35150 multiletter control sequences out of 15000+600000
  629027 words of font info for 47 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,8n,93p,640b,432s stack positions out of 10000i,1000n,20000p,200000b,200000s
