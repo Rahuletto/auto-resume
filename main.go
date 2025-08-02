@@ -12,14 +12,14 @@ import (
 	"sync"
 	"time"
 
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 )
 
 const (
 	GithubApiUrl       = "https://api.github.com/graphql"
-	LinkedinApiUrl     = "https://linkedin-scraper-api-real-time-fast-affordable.p.rapidapi.com/profile/detail"
-	LinkedinProfileUrl = "rahul-marban"
+	LinkedinApiUrl     = "https://professional-network-data.p.rapidapi.com/get-profile-data-by-url"
+	LinkedinProfileUrl = "https://linkedin.com/in/rahul-marban"
 	TemplateFile       = "misc/template.tex"
 	OutputFile         = "resume.tex"
 	GithubDataFile     = "github_data.json"
@@ -149,6 +149,7 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 			return nil, errors.FileOperationError{Message: fmt.Sprintf("Failed to read LinkedIn cache file: %v", err)}
 		}
 
+
 		if err := json.Unmarshal(fileData, &data); err != nil {
 			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse LinkedIn cache file: %v", err)}
 		}
@@ -163,10 +164,10 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 		defer fasthttp.ReleaseRequest(req)
 		defer fasthttp.ReleaseResponse(resp)
 
-		req.SetRequestURI(fmt.Sprintf("%s?username=%s", LinkedinApiUrl, LinkedinProfileUrl))
+		req.SetRequestURI(fmt.Sprintf("%s?url=%s", LinkedinApiUrl, LinkedinProfileUrl))
 		req.Header.SetMethod("GET")
 		req.Header.Set("x-rapidapi-key", linkedinApiKey)
-		req.Header.Set("x-rapidapi-host", "linkedin-scraper-api-real-time-fast-affordable.p.rapidapi.com")
+		req.Header.Set("x-rapidapi-host", "professional-network-data.p.rapidapi.com")
 
 		timeoutClient := &fasthttp.Client{
 			ReadTimeout:  time.Second * 30,
@@ -196,6 +197,9 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 			}
 		}
 	}
+
+	fmt.Println("LinkedIn data fetched successfully")
+	fmt.Println(data)
 
 	return &data, nil
 }
@@ -411,10 +415,10 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 }
 
 func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatalf("Error loading .env file")
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
 	var ghData *models.GithubResponse
 	var lkData *models.LinkedinProfile
