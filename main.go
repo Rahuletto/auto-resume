@@ -18,8 +18,8 @@ import (
 
 const (
 	GithubApiUrl       = "https://api.github.com/graphql"
-	LinkedinApiUrl     = "https://li-data-scraper.p.rapidapi.com/get-profile-data-by-url"
-	LinkedinProfileUrl = "https://linkedin.com/in/rahul-marban"
+	LinkedinApiUrl     = "https://linkedin-scraper-api-real-time-fast-affordable.p.rapidapi.com/profile/detail"
+	LinkedinProfileUrl = "rahul-marban"
 	TemplateFile       = "misc/template.tex"
 	OutputFile         = "resume.tex"
 	GithubDataFile     = "github_data.json"
@@ -163,10 +163,10 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 		defer fasthttp.ReleaseRequest(req)
 		defer fasthttp.ReleaseResponse(resp)
 
-		req.SetRequestURI(fmt.Sprintf("%s?url=%s", LinkedinApiUrl, LinkedinProfileUrl))
+		req.SetRequestURI(fmt.Sprintf("%s?username=%s", LinkedinApiUrl, LinkedinProfileUrl))
 		req.Header.SetMethod("GET")
 		req.Header.Set("x-rapidapi-key", linkedinApiKey)
-		req.Header.Set("x-rapidapi-host", "li-data-scraper.p.rapidapi.com")
+		req.Header.Set("x-rapidapi-host", "linkedin-scraper-api-real-time-fast-affordable.p.rapidapi.com")
 
 		timeoutClient := &fasthttp.Client{
 			ReadTimeout:  time.Second * 30,
