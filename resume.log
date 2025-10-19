@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.9.27)  12 OCT 2025 01:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.18)  19 OCT 2025 01:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -52,7 +52,7 @@ Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
 ) (/home/runner/.TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 )) (/home/runner/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty
-Package: etoolbox 2025/02/11 v2.5l e-TeX tools for LaTeX (JAW)
+Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count283
 )) (/home/runner/.TinyTeX/texmf-dist/tex/latex/tools/array.sty
 Package: array 2025/06/08 v2.6j Tabular extension package (FMi)
@@ -206,7 +206,7 @@ File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 149.
  (/home/runner/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def
-File: pdftex.def 2024/04/13 v1.2c Graphics/color driver for pdftex
+File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ) (/home/runner/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx))
 Package hyperref Info: Link coloring ON on input line 10.
  (./resume.out) (./resume.out)
@@ -270,11 +270,11 @@ Package rerunfilecheck Info: File `resume.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8577 strings out of 469778
- 133636 string characters out of 5482072
- 559634 words of memory out of 5000000
- 36906 multiletter control sequences out of 15000+600000
- 629027 words of font info for 47 fonts, out of 8000000 for 9000
+ 8581 strings out of 469729
+ 133709 string characters out of 5477227
+ 559695 words of memory out of 5000000
+ 36959 multiletter control sequences out of 15000+600000
+ 629923 words of font info for 47 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,8n,93p,658b,438s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/runner/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
