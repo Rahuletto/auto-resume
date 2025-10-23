@@ -226,123 +226,60 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	content := string(templateContent)
 	repositories := githubData.Viewer.Repositories
 	var repoEntries []string
+	wantedRepos := []string{"manic", "simply-djs", "classpro"}
+    repoPattern := regexp.MustCompile(`(?i)^(manic|simply-djs|classpro)$`)
 
-	maxRepos := len(repositories.Nodes)
-	if maxRepos > 3 {
-		maxRepos = 3
+for _, repo := range repositories.Nodes {
+	if !repoPattern.MatchString(repo.Name) {
+		continue
 	}
 
-	for i := 0; i < maxRepos; i++ {
-		repo := repositories.Nodes[i]
-
-		var matchingProject *models.Project = nil
-		for j := range linkedinData.Projects.Items {
-			if strings.EqualFold(linkedinData.Projects.Items[j].Title, repo.Name) {
-				matchingProject = &linkedinData.Projects.Items[j]
-				break
-			}
+	var matchingProject *models.Project
+	for j := range linkedinData.Projects.Items {
+		if strings.EqualFold(linkedinData.Projects.Items[j].Title, repo.Name) {
+			matchingProject = &linkedinData.Projects.Items[j]
+			break
 		}
+	}
 
-		var languages string
-		var bulletPoints []string
+	var languages string
+	var bulletPoints []string
 
-		if matchingProject != nil {
-			descriptionParts := strings.Split(matchingProject.Description, "\n---\n")
-
-			if len(descriptionParts) > 1 {
-				languages = strings.TrimSpace(descriptionParts[1])
-			} else {
-				languages = "No languages available."
-			}
-
-			if parts := strings.Split(matchingProject.Description, "- "); len(parts) > 1 {
-				bulletPoints = parts[1:]
-			}
+	if matchingProject != nil {
+		descriptionParts := strings.Split(matchingProject.Description, "\n---\n")
+		if len(descriptionParts) > 1 {
+			languages = strings.TrimSpace(descriptionParts[1])
 		} else {
 			languages = "No languages available."
 		}
-
-		entry := []string{
-			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}", repo.Url, repo.Name, languages),
+		if parts := strings.Split(matchingProject.Description, "- "); len(parts) > 1 {
+			bulletPoints = parts[1:]
 		}
+	} else {
+		languages = "No languages available."
+	}
 
-		if len(bulletPoints) > 0 {
-			entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
-			for _, point := range bulletPoints {
-				pointText := strings.TrimSpace(point)
-				if strings.Contains(pointText, "\n---\n") {
-					pointText = strings.Split(pointText, "\n---\n")[0]
-				}
+	entry := []string{
+		fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}",
+			repo.Url, repo.Name, languages),
+	}
 
-				re := regexp.MustCompile(`"([^"]+)"`)
-				pointText = re.ReplaceAllString(pointText, "\\textbf{$1}")
-
-				entry = append(entry, fmt.Sprintf("\\item %s", cleanData(pointText)))
+	if len(bulletPoints) > 0 {
+		entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
+		for _, point := range bulletPoints {
+			pointText := strings.TrimSpace(point)
+			if strings.Contains(pointText, "\n---\n") {
+				pointText = strings.Split(pointText, "\n---\n")[0]
 			}
-			entry = append(entry, "\\end{itemize}")
+			re := regexp.MustCompile(`"([^"]+)"`)
+			pointText = re.ReplaceAllString(pointText, "\\textbf{$1}")
+			entry = append(entry, fmt.Sprintf("\\item %s", cleanData(pointText)))
 		}
-
-		repoEntries = append(repoEntries, strings.Join(entry, "\n"))
+		entry = append(entry, "\\end{itemize}")
 	}
 
-	languageSet := make(map[string]bool)
-	for _, repo := range repositories.Nodes {
-		for _, lang := range repo.Languages.Nodes {
-			languageSet[lang.Name] = true
-		}
-	}
-
-	var languages []string
-	for lang := range languageSet {
-		languages = append(languages, lang)
-	}
-
-	githubLanguages := strings.Join(languages, ", ")
-
-	var experienceEntries []string
-	var maxExperiences = len(linkedinData.Position)
-	if maxExperiences > 4 {
-		maxExperiences = 4
-	}
-
-	for i := 0; i < maxExperiences; i++ {
-		exp := linkedinData.Position[i]
-
-		startDate := fmt.Sprintf("%s %d", monthNumberToAbbr(exp.Start.Month), exp.Start.Year)
-		var endDate string
-		if exp.End.Year == 0 {
-			endDate = "Present"
-		} else {
-			endDate = fmt.Sprintf("%s %d", monthNumberToAbbr(exp.End.Month), exp.End.Year)
-		}
-
-		companyName := cleanData(exp.CompanyName)
-		if companyName == "SRM Innovation and Incubation Centre" {
-			companyName = "SIIC Chennai"
-		}
-
-		entry := []string{
-			fmt.Sprintf("\\textbf{%s} \\hfill %s - %s\\\\", cleanData(exp.Title), startDate, endDate),
-			fmt.Sprintf("%s \\hfill \\textit{%s}", companyName, cleanData(exp.Location)),
-		}
-
-		if strings.Contains(exp.Description, "- ") {
-			descParts := strings.Split(exp.Description, "- ")[:3]
-			entry = append(entry, fmt.Sprintf("\n%s\n", cleanData(descParts[0])))
-
-			if len(descParts) > 1 {
-				entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
-				for _, point := range descParts[1:] {
-					entry = append(entry, fmt.Sprintf("\\item %s", cleanData(strings.TrimSpace(point))))
-				}
-				entry = append(entry, "\\end{itemize}")
-			}
-		} else {
-			entry = append(entry, fmt.Sprintf("\n%s\n", cleanData(exp.Description)))
-		}
-
-		experienceEntries = append(experienceEntries, strings.Join(entry, "\n"))
-	}
+	repoEntries = append(repoEntries, strings.Join(entry, "\n"))
+}
 
 	var educationEntries []string
 	for _, edu := range linkedinData.Educations {
