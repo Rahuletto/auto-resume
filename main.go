@@ -12,7 +12,6 @@ import (
 	"sync"
 	"time"
 
-	// "github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 )
 
@@ -149,7 +148,6 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 			return nil, errors.FileOperationError{Message: fmt.Sprintf("Failed to read LinkedIn cache file: %v", err)}
 		}
 
-
 		if err := json.Unmarshal(fileData, &data); err != nil {
 			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse LinkedIn cache file: %v", err)}
 		}
@@ -226,65 +224,64 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	content := string(templateContent)
 	repositories := githubData.Viewer.Repositories
 	var repoEntries []string
-	wantedRepos := []string{"manic", "simply-djs", "classpro"}
-    repoPattern := regexp.MustCompile(`(?i)^(manic|simply-djs|classpro)$`)
+	repoPattern := regexp.MustCompile(`(?i)^(manic|simply-djs|classpro)$`)
 
-for _, repo := range repositories.Nodes {
-	if !repoPattern.MatchString(repo.Name) {
-		continue
-	}
-
-	var matchingProject *models.Project
-	for j := range linkedinData.Projects.Items {
-		if strings.EqualFold(linkedinData.Projects.Items[j].Title, repo.Name) {
-			matchingProject = &linkedinData.Projects.Items[j]
-			break
+	for _, repo := range repositories.Nodes {
+		if !repoPattern.MatchString(repo.Name) {
+			continue
 		}
-	}
 
-	var languages string
-	var bulletPoints []string
+		var matchingProject *models.Project
+		for j := range linkedinData.Projects.Items {
+			if strings.EqualFold(linkedinData.Projects.Items[j].Title, repo.Name) {
+				matchingProject = &linkedinData.Projects.Items[j]
+				break
+			}
+		}
 
-	if matchingProject != nil {
-		descriptionParts := strings.Split(matchingProject.Description, "\n---\n")
-		if len(descriptionParts) > 1 {
-			languages = strings.TrimSpace(descriptionParts[1])
+		var languages string
+		var bulletPoints []string
+
+		if matchingProject != nil {
+			descriptionParts := strings.Split(matchingProject.Description, "\n---\n")
+			if len(descriptionParts) > 1 {
+				languages = strings.TrimSpace(descriptionParts[1])
+			} else {
+				languages = "No languages available."
+			}
+			if parts := strings.Split(matchingProject.Description, "- "); len(parts) > 1 {
+				bulletPoints = parts[1:]
+			}
 		} else {
 			languages = "No languages available."
 		}
-		if parts := strings.Split(matchingProject.Description, "- "); len(parts) > 1 {
-			bulletPoints = parts[1:]
+
+		entry := []string{
+			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}",
+				repo.Url, repo.Name, languages),
 		}
-	} else {
-		languages = "No languages available."
-	}
 
-	entry := []string{
-		fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}",
-			repo.Url, repo.Name, languages),
-	}
-
-	if len(bulletPoints) > 0 {
-		entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
-		for _, point := range bulletPoints {
-			pointText := strings.TrimSpace(point)
-			if strings.Contains(pointText, "\n---\n") {
-				pointText = strings.Split(pointText, "\n---\n")[0]
+		if len(bulletPoints) > 0 {
+			entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
+			for _, point := range bulletPoints {
+				pointText := strings.TrimSpace(point)
+				if strings.Contains(pointText, "\n---\n") {
+					pointText = strings.Split(pointText, "\n---\n")[0]
+				}
+				re := regexp.MustCompile(`"([^"]+)"`)
+				pointText = re.ReplaceAllString(pointText, "\\textbf{$1}")
+				entry = append(entry, fmt.Sprintf("\\item %s", cleanData(pointText)))
 			}
-			re := regexp.MustCompile(`"([^"]+)"`)
-			pointText = re.ReplaceAllString(pointText, "\\textbf{$1}")
-			entry = append(entry, fmt.Sprintf("\\item %s", cleanData(pointText)))
+			entry = append(entry, "\\end{itemize}")
 		}
-		entry = append(entry, "\\end{itemize}")
-	}
 
-	repoEntries = append(repoEntries, strings.Join(entry, "\n"))
-}
+		repoEntries = append(repoEntries, strings.Join(entry, "\n"))
+	}
 
 	var educationEntries []string
 	for _, edu := range linkedinData.Educations {
 		degreeParts := strings.Split(edu.Degree, " - ")
-		degreeType := degreeParts[1]
+		degreeType := degreeParts[len(degreeParts)-1]
 		degreeType = strings.ReplaceAll(degreeType, "B", "B.")
 		degreeType = strings.ReplaceAll(degreeType, "M", "M.")
 
@@ -322,6 +319,9 @@ for _, repo := range repositories.Nodes {
 		speaksEntries = append(speaksEntries, fmt.Sprintf("%s (%s)", cleanData(lang.Name), cleanData(proficiency)))
 	}
 
+	experienceEntries := []string{"No experience data available."}
+	githubLanguages := "Languages: Go, TypeScript, Python"
+
 	content = strings.ReplaceAll(content, "<REPOSITORIES>", strings.Join(repoEntries, "\n"))
 	content = strings.ReplaceAll(content, "<EXPERIENCES>", strings.Join(experienceEntries, "\n"))
 	content = strings.ReplaceAll(content, "<EDUCATION>", strings.Join(educationEntries, "\n"))
@@ -352,11 +352,6 @@ for _, repo := range repositories.Nodes {
 }
 
 func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatalf("Error loading .env file")
-	// }
-
 	var ghData *models.GithubResponse
 	var lkData *models.LinkedinProfile
 	var wg sync.WaitGroup
@@ -403,6 +398,5 @@ func main() {
 	}()
 
 	wg.Wait()
-
 	updateLatexTemplate(ghData, lkData)
 }
