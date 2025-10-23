@@ -67,6 +67,7 @@ jobs:
 
         # Configure token-based push
         git remote set-url origin https://x-access-token:${{ secrets.PUSH_TOKEN }}@github.com/${{ github.repository }}
+        git pull
 
         git add .
         git commit -m 'chore: Updated resume' || echo "No changes to commit"
