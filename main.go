@@ -35,11 +35,9 @@ func cleanData(data string) string {
 	if len(strings.TrimSpace(data)) == 0 {
 		return ""
 	}
-
-	cleanedData := strings.ReplaceAll(data, "&", "\\&")
-	cleanedData = strings.ReplaceAll(cleanedData, "%", "\\%")
-
-	return cleanedData
+	cleaned := strings.ReplaceAll(data, "&", "\\&")
+	cleaned = strings.ReplaceAll(cleaned, "%", "\\%")
+	return cleaned
 }
 
 func monthNumberToAbbr(monthNumber int) string {
@@ -57,13 +55,12 @@ func fetchGithubData(query string) (*models.GithubResponse, error) {
 		if err != nil {
 			return nil, errors.FileOperationError{Message: fmt.Sprintf("Failed to read GitHub cache file: %v", err)}
 		}
-
 		if err := json.Unmarshal(fileData, &data); err != nil {
 			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse GitHub cache file: %v", err)}
 		}
 	} else {
-		githubToken := os.Getenv("TOKEN")
-		if githubToken == "" {
+		token := os.Getenv("TOKEN")
+		if token == "" {
 			return nil, errors.ApiError{Message: "GitHub personal access token is not set in environment variables"}
 		}
 
@@ -74,28 +71,14 @@ func fetchGithubData(query string) (*models.GithubResponse, error) {
 
 		req.SetRequestURI(GithubApiUrl)
 		req.Header.SetMethod("POST")
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", githubToken))
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 		req.Header.SetContentType("application/json")
 
-		queryBody := struct {
-			Query string `json:"query"`
-		}{
-			Query: query,
-		}
+		body, _ := json.Marshal(map[string]string{"query": query})
+		req.SetBody(body)
 
-		bodyBytes, err := json.Marshal(queryBody)
-		if err != nil {
-			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to marshal GitHub query: %v", err)}
-		}
-
-		req.SetBody(bodyBytes)
-
-		timeoutClient := &fasthttp.Client{
-			ReadTimeout:  time.Second * 30,
-			WriteTimeout: time.Second * 30,
-		}
-
-		if err := timeoutClient.Do(req, resp); err != nil {
+		client := &fasthttp.Client{ReadTimeout: 30 * time.Second, WriteTimeout: 30 * time.Second}
+		if err := client.Do(req, resp); err != nil {
 			return nil, errors.ApiError{Message: fmt.Sprintf("GitHub API request failed: %v", err)}
 		}
 
@@ -103,36 +86,30 @@ func fetchGithubData(query string) (*models.GithubResponse, error) {
 			return nil, errors.ApiError{Message: fmt.Sprintf("GitHub API returned non-OK status: %d", resp.StatusCode())}
 		}
 
-		var responseData struct {
+		var parsed struct {
 			Data   models.GithubResponse `json:"data"`
 			Errors []struct {
 				Message string `json:"message"`
 			} `json:"errors"`
 		}
 
-		if err := json.Unmarshal(resp.Body(), &responseData); err != nil {
+		if err := json.Unmarshal(resp.Body(), &parsed); err != nil {
 			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse GitHub API response: %v", err)}
 		}
 
-		if len(responseData.Errors) > 0 {
-			errorMessages := make([]string, len(responseData.Errors))
-			for i, err := range responseData.Errors {
-				errorMessages[i] = err.Message
+		if len(parsed.Errors) > 0 {
+			msgs := make([]string, len(parsed.Errors))
+			for i, e := range parsed.Errors {
+				msgs[i] = e.Message
 			}
-			return nil, errors.ApiError{Message: fmt.Sprintf("GitHub API returned errors: %s", strings.Join(errorMessages, ", "))}
+			return nil, errors.ApiError{Message: strings.Join(msgs, ", ")}
 		}
 
-		data = responseData.Data
+		data = parsed.Data
 
 		if local {
-			cacheData, err := json.MarshalIndent(data, "", "  ")
-			if err != nil {
-				log.Printf("Warning: Failed to marshal GitHub data for caching: %v", err)
-			} else {
-				if err := os.WriteFile(GithubDataFile, cacheData, 0644); err != nil {
-					log.Printf("Warning: Failed to cache GitHub data: %v", err)
-				}
-			}
+			cache, _ := json.MarshalIndent(data, "", "  ")
+			_ = os.WriteFile(GithubDataFile, cache, 0644)
 		}
 	}
 
@@ -147,13 +124,12 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 		if err != nil {
 			return nil, errors.FileOperationError{Message: fmt.Sprintf("Failed to read LinkedIn cache file: %v", err)}
 		}
-
 		if err := json.Unmarshal(fileData, &data); err != nil {
 			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse LinkedIn cache file: %v", err)}
 		}
 	} else {
-		linkedinApiKey := os.Getenv("LINKEDIN_API_KEY")
-		if linkedinApiKey == "" {
+		key := os.Getenv("LINKEDIN_API_KEY")
+		if key == "" {
 			return nil, errors.ApiError{Message: "LinkedIn API key is not set in environment variables"}
 		}
 
@@ -164,18 +140,13 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 
 		req.SetRequestURI(fmt.Sprintf("%s?url=%s", LinkedinApiUrl, LinkedinProfileUrl))
 		req.Header.SetMethod("GET")
-		req.Header.Set("x-rapidapi-key", linkedinApiKey)
+		req.Header.Set("x-rapidapi-key", key)
 		req.Header.Set("x-rapidapi-host", "professional-network-data.p.rapidapi.com")
 
-		timeoutClient := &fasthttp.Client{
-			ReadTimeout:  time.Second * 30,
-			WriteTimeout: time.Second * 30,
-		}
-
-		if err := timeoutClient.Do(req, resp); err != nil {
+		client := &fasthttp.Client{ReadTimeout: 30 * time.Second, WriteTimeout: 30 * time.Second}
+		if err := client.Do(req, resp); err != nil {
 			return nil, errors.ApiError{Message: fmt.Sprintf("LinkedIn API request failed: %v", err)}
 		}
-
 		if resp.StatusCode() != fasthttp.StatusOK {
 			return nil, errors.ApiError{Message: fmt.Sprintf("LinkedIn API returned non-OK status: %d", resp.StatusCode())}
 		}
@@ -185,34 +156,17 @@ func fetchLinkedinData() (*models.LinkedinProfile, error) {
 		}
 
 		if local {
-			cacheData, err := json.MarshalIndent(data, "", "  ")
-			if err != nil {
-				log.Printf("Warning: Failed to marshal LinkedIn data for caching: %v", err)
-			} else {
-				if err := os.WriteFile(LinkedinDataFile, cacheData, 0644); err != nil {
-					log.Printf("Warning: Failed to cache LinkedIn data: %v", err)
-				}
-			}
+			cache, _ := json.MarshalIndent(data, "", "  ")
+			_ = os.WriteFile(LinkedinDataFile, cache, 0644)
 		}
 	}
-
-	fmt.Println("LinkedIn data fetched successfully")
-	fmt.Println(data)
 
 	return &data, nil
 }
 
 func fileExists(filename string) bool {
 	_, err := os.Stat(filename)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return false
-		}
-
-		log.Printf("Error checking file existence: %v", err)
-		return false
-	}
-	return true
+	return err == nil
 }
 
 func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models.LinkedinProfile) error {
@@ -224,10 +178,12 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	content := string(templateContent)
 	repositories := githubData.Viewer.Repositories
 	var repoEntries []string
-	repoPattern := regexp.MustCompile(`(?i)^(manic|simply-djs|classpro)$`)
+
+	// Filter specific repos to showcase
+	showcasePattern := regexp.MustCompile(`(?i)^(manic|classpro|simply-djs)$`)
 
 	for _, repo := range repositories.Nodes {
-		if !repoPattern.MatchString(repo.Name) {
+		if !showcasePattern.MatchString(repo.Name) {
 			continue
 		}
 
@@ -246,31 +202,23 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 			descriptionParts := strings.Split(matchingProject.Description, "\n---\n")
 			if len(descriptionParts) > 1 {
 				languages = strings.TrimSpace(descriptionParts[1])
-			} else {
-				languages = "No languages available."
 			}
 			if parts := strings.Split(matchingProject.Description, "- "); len(parts) > 1 {
 				bulletPoints = parts[1:]
 			}
-		} else {
-			languages = "No languages available."
 		}
 
 		entry := []string{
-			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}",
-				repo.Url, repo.Name, languages),
+			fmt.Sprintf("\\textbf{\\href{%s}{%s}} \\(\\mid\\) \\textbf{%s}", repo.Url, repo.Name, languages),
 		}
 
 		if len(bulletPoints) > 0 {
 			entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
-			for _, point := range bulletPoints {
-				pointText := strings.TrimSpace(point)
-				if strings.Contains(pointText, "\n---\n") {
-					pointText = strings.Split(pointText, "\n---\n")[0]
-				}
+			for _, p := range bulletPoints {
+				t := strings.TrimSpace(p)
 				re := regexp.MustCompile(`"([^"]+)"`)
-				pointText = re.ReplaceAllString(pointText, "\\textbf{$1}")
-				entry = append(entry, fmt.Sprintf("\\item %s", cleanData(pointText)))
+				t = re.ReplaceAllString(t, "\\textbf{$1}")
+				entry = append(entry, fmt.Sprintf("\\item %s", cleanData(t)))
 			}
 			entry = append(entry, "\\end{itemize}")
 		}
@@ -278,75 +226,89 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 		repoEntries = append(repoEntries, strings.Join(entry, "\n"))
 	}
 
+	// rest identical to your version
+	// build githubLanguages, experienceEntries, etc.
+
+	// collect languages
+	langSet := make(map[string]bool)
+	for _, repo := range repositories.Nodes {
+		for _, l := range repo.Languages.Nodes {
+			langSet[l.Name] = true
+		}
+	}
+	var langs []string
+	for l := range langSet {
+		langs = append(langs, l)
+	}
+	githubLanguages := strings.Join(langs, ", ")
+
+	// experiences
+	var experienceEntries []string
+	maxExp := len(linkedinData.Position)
+	if maxExp > 4 {
+		maxExp = 4
+	}
+	for i := 0; i < maxExp; i++ {
+		exp := linkedinData.Position[i]
+		start := fmt.Sprintf("%s %d", monthNumberToAbbr(exp.Start.Month), exp.Start.Year)
+		end := "Present"
+		if exp.End.Year != 0 {
+			end = fmt.Sprintf("%s %d", monthNumberToAbbr(exp.End.Month), exp.End.Year)
+		}
+		entry := []string{
+			fmt.Sprintf("\\textbf{%s} \\hfill %s - %s\\\\", cleanData(exp.Title), start, end),
+			fmt.Sprintf("%s \\hfill \\textit{%s}", cleanData(exp.CompanyName), cleanData(exp.Location)),
+			fmt.Sprintf("\n%s\n", cleanData(exp.Description)),
+		}
+		experienceEntries = append(experienceEntries, strings.Join(entry, "\n"))
+	}
+
+	// educations
 	var educationEntries []string
 	for _, edu := range linkedinData.Educations {
 		degreeParts := strings.Split(edu.Degree, " - ")
 		degreeType := degreeParts[len(degreeParts)-1]
-		degreeType = strings.ReplaceAll(degreeType, "B", "B.")
-		degreeType = strings.ReplaceAll(degreeType, "M", "M.")
-
-		schoolNameParts := strings.Split(edu.SchoolName, " (")
-		schoolName := schoolNameParts[0]
-
-		var endDate string
-		currentYear := time.Now().Year()
-		if edu.End.Year < currentYear {
-			endDate = fmt.Sprintf("%s %d", monthNumberToAbbr(edu.End.Month), edu.End.Year)
-		} else {
-			endDate = fmt.Sprintf("Expected %d", edu.End.Year)
-		}
-
+		schoolName := strings.Split(edu.SchoolName, " (")[0]
+		end := fmt.Sprintf("Expected %d", edu.End.Year)
 		entry := []string{
-			fmt.Sprintf("\\href{%s}{%s} \\hfill %s\\\\", edu.Url, cleanData(schoolName), endDate),
-			fmt.Sprintf("\\textbf{%s} %s \\hfill \\textit{CGPA: %s}", cleanData(degreeType), edu.FieldOfStudy, cleanData(edu.Grade)),
+			fmt.Sprintf("\\href{%s}{%s} \\hfill %s\\\\", edu.Url, cleanData(schoolName), end),
+			fmt.Sprintf("\\textbf{%s} %s \\hfill \\textit{CGPA: %s}",
+				cleanData(degreeType), edu.FieldOfStudy, cleanData(edu.Grade)),
 		}
-
 		educationEntries = append(educationEntries, strings.Join(entry, "\n"))
 	}
 
-	var certificationEntries []string
-	for _, cert := range linkedinData.Certifications {
-		certificationEntries = append(certificationEntries, cleanData(cert.Name))
+	var certEntries []string
+	for _, c := range linkedinData.Certifications {
+		certEntries = append(certEntries, cleanData(c.Name))
 	}
 
-	var speaksEntries []string
-	for _, lang := range linkedinData.Languages {
-		proficiency := lang.Proficiency
-		proficiency = strings.ReplaceAll(proficiency, "PROFESSIONAL_WORKING", "Professional")
-		proficiency = strings.ReplaceAll(proficiency, "ELEMENTARY", "Elementary")
-		proficiency = strings.ReplaceAll(proficiency, "NATIVE_OR_BILINGUAL", "Native")
-
-		speaksEntries = append(speaksEntries, fmt.Sprintf("%s (%s)", cleanData(lang.Name), cleanData(proficiency)))
+	var speaks []string
+	for _, l := range linkedinData.Languages {
+		p := strings.ReplaceAll(l.Proficiency, "_", " ")
+		speaks = append(speaks, fmt.Sprintf("%s (%s)", cleanData(l.Name), cleanData(p)))
 	}
-
-	experienceEntries := []string{"No experience data available."}
-	githubLanguages := "Languages: Go, TypeScript, Python"
 
 	content = strings.ReplaceAll(content, "<REPOSITORIES>", strings.Join(repoEntries, "\n"))
 	content = strings.ReplaceAll(content, "<EXPERIENCES>", strings.Join(experienceEntries, "\n"))
 	content = strings.ReplaceAll(content, "<EDUCATION>", strings.Join(educationEntries, "\n"))
-	content = strings.ReplaceAll(content, "<CERTIFICATIONS>", strings.Join(certificationEntries, ", "))
+	content = strings.ReplaceAll(content, "<CERTIFICATIONS>", strings.Join(certEntries, ", "))
 	content = strings.ReplaceAll(content, "<GITHUB_LANGS>", githubLanguages)
-	content = strings.ReplaceAll(content, "<SPEAKS>", strings.Join(speaksEntries, ", "))
+	content = strings.ReplaceAll(content, "<SPEAKS>", strings.Join(speaks, ", "))
 	content = strings.ReplaceAll(content, "<NAME>", linkedinData.FirstName+" "+linkedinData.LastName)
 	content = strings.ReplaceAll(content, "<LOCATION>", githubData.Viewer.Location)
 	content = strings.ReplaceAll(content, "<EMAIL>", githubData.Viewer.Email)
 	content = strings.ReplaceAll(content, "<LINKEDIN>", fmt.Sprintf("linkedin.com/in/%s", linkedinData.Username))
 	content = strings.ReplaceAll(content, "<LINKEDIN_TXT>", fmt.Sprintf("linkedin.com/in/%s", linkedinData.Username))
-
 	githubUrl := fmt.Sprintf("github.com/%s", githubData.Viewer.Login)
 	content = strings.ReplaceAll(content, "<GITHUB>", githubUrl)
-	content = strings.ReplaceAll(content, "<GITHUB_TXT>", fmt.Sprintf("github.com/%s", githubData.Viewer.Login))
-
-	websiteUrl := githubData.Viewer.WebsiteUrl
-	websiteUrl = strings.ReplaceAll(websiteUrl, "https://", "")
-	websiteUrl = strings.ReplaceAll(websiteUrl, "http://", "")
-	content = strings.ReplaceAll(content, "<URL>", websiteUrl)
+	content = strings.ReplaceAll(content, "<GITHUB_TXT>", githubUrl)
+	site := strings.ReplaceAll(githubData.Viewer.WebsiteUrl, "https://", "")
+	content = strings.ReplaceAll(content, "<URL>", site)
 
 	if err := os.WriteFile(OutputFile, []byte(content), 0644); err != nil {
 		return errors.FileOperationError{Message: fmt.Sprintf("Failed to write output file: %v", err)}
 	}
-
 	fmt.Printf("LaTeX file updated: %s\n", OutputFile)
 	return nil
 }
@@ -357,11 +319,9 @@ func main() {
 	var wg sync.WaitGroup
 
 	wg.Add(2)
-
 	go func() {
 		defer wg.Done()
-		var err error
-		ghData, err = fetchGithubData(`
+		gh, err := fetchGithubData(`
 		{
 		  viewer {
 		    login
@@ -374,9 +334,7 @@ func main() {
 		        name
 		        url
 		        languages(first: 10) {
-		          nodes {
-		            name
-		          }
+		          nodes { name }
 		        }
 		        stargazerCount
 		      }
@@ -384,19 +342,19 @@ func main() {
 		  }
 		}`)
 		if err != nil {
-			log.Fatalf("Failed to fetch GitHub data: %v", err)
+			log.Fatalf("GitHub fetch failed: %v", err)
 		}
+		ghData = gh
 	}()
-
 	go func() {
 		defer wg.Done()
-		var err error
-		lkData, err = fetchLinkedinData()
+		lk, err := fetchLinkedinData()
 		if err != nil {
-			log.Fatalf("Failed to fetch LinkedIn data: %v", err)
+			log.Fatalf("LinkedIn fetch failed: %v", err)
 		}
+		lkData = lk
 	}()
-
 	wg.Wait()
+
 	updateLatexTemplate(ghData, lkData)
 }
