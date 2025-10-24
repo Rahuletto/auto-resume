@@ -73,7 +73,7 @@ jobs:
         git pull
 
         git add .
-        git commit -m 'chore: Updated resume' || echo "No changes to commit"
+        git commit -m 'chore: Updated resume [skip ci]' || echo "No changes to commit"
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
