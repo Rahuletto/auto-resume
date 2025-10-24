@@ -216,6 +216,9 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 			entry = append(entry, "\\begin{itemize}\n\\itemsep -3pt{}")
 			for _, p := range bulletPoints {
 				t := strings.TrimSpace(p)
+				if strings.Contains(t, "\n---\n") {
+					t = strings.Split(t, "\n---\n")[0]
+				}
 				re := regexp.MustCompile(`"([^"]+)"`)
 				t = re.ReplaceAllString(t, "\\textbf{$1}")
 				entry = append(entry, fmt.Sprintf("\\item %s", cleanData(t)))
@@ -225,9 +228,6 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 
 		repoEntries = append(repoEntries, strings.Join(entry, "\n"))
 	}
-
-	// rest identical to your version
-	// build githubLanguages, experienceEntries, etc.
 
 	// collect languages
 	langSet := make(map[string]bool)
