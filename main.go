@@ -249,7 +249,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	count := 0
 	
 	for _, exp := range linkedinData.Position {
-		if internPattern.MatchString(exp.Title) {
+		if !internPattern.MatchString(exp.Title) {
 			continue
 		}
 	
