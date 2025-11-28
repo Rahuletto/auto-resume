@@ -245,7 +245,7 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	// experiences
 	internPattern := regexp.MustCompile(`(?i)intern`)
 
-	filtered := make([]Position, 0, len(linkedinData.Position))
+	filtered := make([]Experience, 0, len(linkedinData.Position))
 	for _, exp := range linkedinData.Position {
 		if internPattern.MatchString(exp.Title) {
 			filtered = append(filtered, exp)
