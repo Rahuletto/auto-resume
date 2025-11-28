@@ -243,21 +243,33 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	githubLanguages := strings.Join(langs, ", ")
 
 	// experiences
-	var experienceEntries []string
-	maxExp := len(linkedinData.Position)
-	if maxExp > 4 {
-		maxExp = 4
+	internPattern := regexp.MustCompile(`(?i)intern`)
+
+	filtered := make([]Position, 0, len(linkedinData.Position))
+	for _, exp := range linkedinData.Position {
+		if internPattern.MatchString(exp.Title) {
+			filtered = append(filtered, exp)
+		}
 	}
+
+	maxExp := 4
+	if len(filtered) < maxExp {
+		maxExp = len(filtered)
+	}
+
+	var experienceEntries []string
 	for i := 0; i < maxExp; i++ {
-		exp := linkedinData.Position[i]
+		exp := filtered[i]
 		start := fmt.Sprintf("%s %d", monthNumberToAbbr(exp.Start.Month), exp.Start.Year)
 		end := "Present"
 		if exp.End.Year != 0 {
 			end = fmt.Sprintf("%s %d", monthNumberToAbbr(exp.End.Month), exp.End.Year)
 		}
 		entry := []string{
-			fmt.Sprintf("\\textbf{%s} \\hfill %s - %s\\\\", cleanData(exp.Title), start, end),
-			fmt.Sprintf("%s \\hfill \\textit{%s}", cleanData(exp.CompanyName), cleanData(exp.Location)),
+			fmt.Sprintf("\\textbf{%s} \\hfill %s - %s\\\\",
+				cleanData(exp.Title), start, end),
+			fmt.Sprintf("%s \\hfill \\textit{%s}",
+				cleanData(exp.CompanyName), cleanData(exp.Location)),
 			fmt.Sprintf("\n%s\n", cleanData(exp.Description)),
 		}
 		experienceEntries = append(experienceEntries, strings.Join(entry, "\n"))
