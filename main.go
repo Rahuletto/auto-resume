@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 )
 
@@ -32,6 +33,40 @@ var (
 	months        = [...]string{"", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
 	nonAsciiRegex = regexp.MustCompile(`[^\x00-\x7F]+`)
 )
+
+var projectFallbacks = map[string]struct {
+	Languages   string
+	Description string
+}{
+	"simply-djs": {
+		Languages:   "Typescript, DiscordJS, NPM, MongoDB, NodeJS",
+		Description: "- Developed for streamlining complex bot functionalities with minimal code, leading to 520K+ annual downloads and allowing developers to develop discord bots without having to write complex logic\n- Maintained for more than 2 years with regular performance optimizations, security enhancements, and continuous feature updates compatible with the latest Discord.JS version.\n- Reached more than \"75 stars\", \"30+ forks\", and \"350+ commits\" on GitHub, with more than 5 active contributors to the project.",
+	},
+	"manic": {
+		Languages:   "TypeScript, React, Hono, Bun, OXC",
+		Description: "- Built The fastest framework for React. Delivering sub 150ms cold starts and ~500ms production builds in benchmark suites against Next.js, Remix, Astro, Nuxt, TanStack Start, and Vite-based frameworks\n- Implemented production-grade optimizations including parallel transpilation, OXC-powered compilation/minification, and Bun-native runtime pipelines, enabling lightweight ~400KB production outputs and ultra-fast rebuild performance\n- A full-on Fullstack framework with Hono backend and React frontend, featuring filesystem routing, automatic API route generation, and sub-20ms hot reloads using Bun’s native transpiler",
+	},
+	"classpro": {
+		Languages:   "Typescript, React, Go, NextJS, Supabase",
+		Description: "- Serving over 15,000+ monthly active users with 1.1M+ page views per month, ensuring scalability and stability for the students.\n- Incorporated a Golang fiber server to scrape data which resulted in 40% faster data scraping and fetches reducing the wait time\n- Optimized platform performance to handle peak traffic, ensuring 99.9% uptime and seamless access during critical academic periods.",
+	},
+	"agent-orchestrator": {
+		Languages:   "TypeScript, LangGraph, AI SDK",
+		Description: "- Built an agentic orchestrator to coordinate multi-agent system execution and task delegation.\n- Designed a centralized coordinator node managing state transitions and message passing between specialized expert subagents.\n- Implemented real-time streaming and session state tracking with failover recovery, ensuring long-running agent workflows complete reliably.",
+	},
+	"lavalamp": {
+		Languages:   "Agentic AI, Typescript, Workers AI, Flue",
+		Description: "- An open-source Cloudflare-native coding agent harness enabling AI-assisted software development directly from the terminal.\n- Designed core infrastructure including semantic code indexing, a hash-anchored file editing engine improving edit reliability by 42%, resumable agent sessions, and approval-based command execution.\n- Architected an extensible multi-agent framework with expert subagents and Cloudflare Workers AI integration, providing secure, local-first AI development workflows.",
+	},
+	"bullet": {
+		Languages:   "Typescript, Nuclei, BBOT, SQLi",
+		Description: "- Built an agentic AI security platform that reasons over 7+ web application surfaces, generates attack hypotheses, prioritizes high-signal leads, and autonomously executes multi-step tool-calling workflows.\n- Engineered a 25+ phase reconnaissance and vulnerability-validation pipeline covering authentication, SQL injection, XSS, SSRF, business logic, API discovery, and JavaScript analysis.\n- Integrated knowledge-graph reasoning to correlate endpoints, exposed secrets, authentication context, findings, and attack chains into structured security reports.",
+	},
+	"rocket": {
+		Languages:   "Tauri, React, Typescript, Rust",
+		Description: "- Developed a super-fast, lightweight code editor optimized for performance, achieving ~30% greater RAM efficiency compared to industry standards.\n- Implemented advanced code completion and Language Server Protocol (LSP) support for over 120+ file formats with syntax highlighting.\n- Significantly reduced resource load for users, leading to a smoother and more efficient coding experience when developing a resource-intensive project",
+	},
+}
 
 func cleanData(data string) string {
 	if len(strings.TrimSpace(data)) == 0 {
@@ -227,6 +262,19 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 			if parts := strings.Split(matchingProject.Description, "- "); len(parts) > 1 {
 				bulletPoints = parts[1:]
 			}
+		} else {
+			cleanedRepoName := cleanProjectTitle(repo.Name)
+			for fallbackName, fb := range projectFallbacks {
+				if cleanProjectTitle(fallbackName) == cleanedRepoName {
+					languages = fb.Languages
+					if parts := strings.Split(fb.Description, "- "); len(parts) > 1 {
+						bulletPoints = parts[1:]
+					} else {
+						bulletPoints = []string{fb.Description}
+					}
+					break
+				}
+			}
 		}
 
 		entry := []string{
@@ -352,6 +400,7 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 }
 
 func main() {
+	_ = godotenv.Load()
 	var ghData *models.GithubResponse
 	var lkData *models.LinkedinProfile
 	var wg sync.WaitGroup
@@ -394,6 +443,6 @@ func main() {
 	}()
 	wg.Wait()
 
-	updateLatexTemplate(TemplateFile, OutputFile, regexp.MustCompile(`(?i)^(manic|classpro|simply-djs)$`), ghData, lkData)
+	updateLatexTemplate(TemplateFile, OutputFile, regexp.MustCompile(`(?i)^(manic|classpro|rocket)$`), ghData, lkData)
 	updateLatexTemplate(AiTemplateFile, AiOutputFile, regexp.MustCompile(`(?i)^(agent-orchestrator|lavalamp|bullet)$`), ghData, lkData) // AI projects TBD
 }
