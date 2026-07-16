@@ -21,6 +21,8 @@ const (
 	LinkedinProfileUrl = "https://linkedin.com/in/rahul-marban"
 	TemplateFile       = "misc/template.tex"
 	OutputFile         = "resume.tex"
+	AiTemplateFile     = "misc/ai-template.tex"
+	AiOutputFile       = "ai-resume.tex"
 	GithubDataFile     = "github_data.json"
 	LinkedinDataFile   = "linkedin_data.json"
 )
@@ -169,8 +171,8 @@ func fileExists(filename string) bool {
 	return err == nil
 }
 
-func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models.LinkedinProfile) error {
-	templateContent, err := os.ReadFile(TemplateFile)
+func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regexp.Regexp, githubData *models.GithubResponse, linkedinData *models.LinkedinProfile) error {
+	templateContent, err := os.ReadFile(templateFile)
 	if err != nil {
 		return errors.FileOperationError{Message: fmt.Sprintf("Failed to read template file: %v", err)}
 	}
@@ -180,7 +182,6 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	var repoEntries []string
 
 	// Filter specific repos to showcase
-	showcasePattern := regexp.MustCompile(`(?i)^(manic|classpro|simply-djs)$`)
 
 	for _, repo := range repositories.Nodes {
 		if !showcasePattern.MatchString(repo.Name) {
@@ -323,10 +324,10 @@ func updateLatexTemplate(githubData *models.GithubResponse, linkedinData *models
 	site := strings.ReplaceAll(githubData.Viewer.WebsiteUrl, "https://", "")
 	content = strings.ReplaceAll(content, "<URL>", site)
 
-	if err := os.WriteFile(OutputFile, []byte(content), 0644); err != nil {
+	if err := os.WriteFile(outputFile, []byte(content), 0644); err != nil {
 		return errors.FileOperationError{Message: fmt.Sprintf("Failed to write output file: %v", err)}
 	}
-	fmt.Printf("LaTeX file updated: %s\n", OutputFile)
+	fmt.Printf("LaTeX file updated: %s\n", outputFile)
 	return nil
 }
 
@@ -373,5 +374,6 @@ func main() {
 	}()
 	wg.Wait()
 
-	updateLatexTemplate(ghData, lkData)
+	updateLatexTemplate(TemplateFile, OutputFile, regexp.MustCompile(`(?i)^(manic|classpro|simply-djs)$`), ghData, lkData)
+	updateLatexTemplate(AiTemplateFile, AiOutputFile, regexp.MustCompile(`(?i)^(agent-orchestrator|lavalamp|bullet)$`), ghData, lkData) // AI projects TBD
 }
