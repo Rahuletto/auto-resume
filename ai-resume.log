@@ -2,8 +2,8 @@ This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded forma
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**resume.tex
-(./resume.tex
+**ai-resume.tex
+(./ai-resume.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-03-20>
 (./resume.cls
@@ -178,8 +178,9 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 ) (/home/runner/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2026-02-18 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count298
-) (./resume.aux)
-\openout1 = `resume.aux'.
+)
+No file ai-resume.aux.
+\openout1 = `ai-resume.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
@@ -199,7 +200,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
- (/home/runner/.TinyTeX/texmf-dist/tex/latex/graphics/color.sty
+(/home/runner/.TinyTeX/texmf-dist/tex/latex/graphics/color.sty
 Package: color 2025/01/14 v1.3e Standard LaTeX Color (DPC)
  (/home/runner/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
@@ -209,9 +210,8 @@ Package color Info: Driver file: pdftex.def on input line 149.
 File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ) (/home/runner/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx))
 Package hyperref Info: Link coloring ON on input line 10.
- (./resume.out) (./resume.out)
 \@outlinefile=\write3
-\openout3 = `resume.out'.
+\openout3 = `ai-resume.out'.
 
 
 *geometry* driver: auto-detecting
@@ -259,24 +259,31 @@ Overfull \hbox (30.0pt too wide) in paragraph at lines 10--10
 
 [1
 
-{/home/runner/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./resume.aux)
+{/home/runner/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./ai-resume.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-03-20>
  ***********
-Package rerunfilecheck Info: File `resume.out' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+
+
+Package rerunfilecheck Warning: File `ai-resume.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `ai-resume.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8618 strings out of 469339
- 135425 string characters out of 5466427
- 565264 words of memory out of 5000000
- 37386 multiletter control sequences out of 15000+600000
+ 8611 strings out of 469339
+ 135352 string characters out of 5466427
+ 565224 words of memory out of 5000000
+ 37384 multiletter control sequences out of 15000+600000
  629923 words of font info for 47 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,8n,93p,705b,440s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,8n,93p,708b,440s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/runner/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on resume.pdf (1 page, 84311 bytes).
+Output written on ai-resume.pdf (1 page, 81122 bytes).
 PDF statistics:
  52 PDF objects out of 1000 (max. 8388607)
  37 compressed objects within 1 object stream
