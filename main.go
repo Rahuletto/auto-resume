@@ -171,6 +171,14 @@ func fileExists(filename string) bool {
 	return err == nil
 }
 
+func cleanProjectTitle(s string) string {
+	s = strings.ToLower(s)
+	s = strings.ReplaceAll(s, "-", "")
+	s = strings.ReplaceAll(s, "_", "")
+	s = strings.ReplaceAll(s, " ", "")
+	return s
+}
+
 func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regexp.Regexp, githubData *models.GithubResponse, linkedinData *models.LinkedinProfile) error {
 	templateContent, err := os.ReadFile(templateFile)
 	if err != nil {
@@ -190,7 +198,7 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 
 		var matchingProject *models.Project
 		for j := range linkedinData.Projects.Items {
-			if strings.EqualFold(linkedinData.Projects.Items[j].Title, repo.Name) {
+			if cleanProjectTitle(linkedinData.Projects.Items[j].Title) == cleanProjectTitle(repo.Name) {
 				matchingProject = &linkedinData.Projects.Items[j]
 				break
 			}
@@ -307,7 +315,7 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 		speaks = append(speaks, fmt.Sprintf("%s (%s)", cleanData(l.Name), cleanData(p)))
 	}
 
-	content = strings.ReplaceAll(content, "<REPOSITORIES>", strings.Join(repoEntries, "\n"))
+	content = strings.ReplaceAll(content, "<REPOSITORIES>", strings.Join(repoEntries, "\n\n"))
 	content = strings.ReplaceAll(content, "<EXPERIENCES>", strings.Join(experienceEntries, "\n"))
 	content = strings.ReplaceAll(content, "<EDUCATION>", strings.Join(educationEntries, "\n"))
 	content = strings.ReplaceAll(content, "<CERTIFICATIONS>", strings.Join(certEntries, ", "))
