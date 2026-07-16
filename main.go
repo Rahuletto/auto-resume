@@ -173,9 +173,13 @@ func fileExists(filename string) bool {
 
 func cleanProjectTitle(s string) string {
 	s = strings.ToLower(s)
+	s = strings.TrimSpace(s)
 	s = strings.ReplaceAll(s, "-", "")
 	s = strings.ReplaceAll(s, "_", "")
 	s = strings.ReplaceAll(s, " ", "")
+	s = strings.ReplaceAll(s, "\n", "")
+	s = strings.ReplaceAll(s, "\r", "")
+	s = strings.ReplaceAll(s, "\t", "")
 	return s
 }
 
@@ -189,6 +193,12 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 	repositories := githubData.Viewer.Repositories
 	var repoEntries []string
 
+	fmt.Printf("--- Updating %s ---\n", outputFile)
+	fmt.Println("Available LinkedIn projects:")
+	for _, proj := range linkedinData.Projects.Items {
+		fmt.Printf("  - %q\n", proj.Title)
+	}
+
 	// Filter specific repos to showcase
 
 	for _, repo := range repositories.Nodes {
@@ -198,7 +208,9 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 
 		var matchingProject *models.Project
 		for j := range linkedinData.Projects.Items {
-			if cleanProjectTitle(linkedinData.Projects.Items[j].Title) == cleanProjectTitle(repo.Name) {
+			cleanedLTitle := cleanProjectTitle(linkedinData.Projects.Items[j].Title)
+			cleanedRName := cleanProjectTitle(repo.Name)
+			if strings.Contains(cleanedLTitle, cleanedRName) || strings.Contains(cleanedRName, cleanedLTitle) {
 				matchingProject = &linkedinData.Projects.Items[j]
 				break
 			}
