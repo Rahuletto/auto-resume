@@ -68,13 +68,24 @@ var projectFallbacks = map[string]struct {
 	},
 }
 
+// latexEscaper escapes the LaTeX specials that turn up in scraped text.
+// Braces and backslashes are deliberately left alone: cleanData runs after
+// the "..." -> \textbf{...} step, so escaping those would break that markup.
+var latexEscaper = strings.NewReplacer(
+	"&", "\\&",
+	"%", "\\%",
+	"$", "\\$",
+	"#", "\\#",
+	"_", "\\_",
+	"~", "\\textasciitilde{}",
+	"^", "\\textasciicircum{}",
+)
+
 func cleanData(data string) string {
 	if len(strings.TrimSpace(data)) == 0 {
 		return ""
 	}
-	cleaned := strings.ReplaceAll(data, "&", "\\&")
-	cleaned = strings.ReplaceAll(cleaned, "%", "\\%")
-	return cleaned
+	return latexEscaper.Replace(data)
 }
 
 func monthNumberToAbbr(monthNumber int) string {
