@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.9.26)  18 OCT 2026 02:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.21)  25 OCT 2026 02:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -66,7 +66,7 @@ Package: array 2026/02/24 v2.7b Tabular extension package (FMi)
 ) (/home/runner/.TinyTeX/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 ) (/home/runner/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
-Package: hyperref 2026-06-17 v7.01r Hypertext links for LaTeX
+Package: hyperref 2026-10-09 v7.01s Hypertext links for LaTeX
  (/home/runner/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
 ) (/home/runner/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
@@ -98,7 +98,7 @@ Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO)
 \Hy@linkcounter=\count286
 \Hy@pagecounter=\count287
  (/home/runner/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
-File: pd1enc.def 2026-06-17 v7.01r Hyperref: PDFDocEncoding definition (HO)
+File: pd1enc.def 2026-10-09 v7.01s Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 ) (/home/runner/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
@@ -106,7 +106,7 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
 \Hy@SavedSpaceFactor=\count288
  (/home/runner/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
-File: puenc.def 2026-06-17 v7.01r Hyperref: PDF Unicode definition (HO)
+File: puenc.def 2026-10-09 v7.01s Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 )
@@ -145,7 +145,7 @@ Package hyperref Info: PDF/A mode OFF on input line 6121.
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
  (/home/runner/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
-File: hpdftex.def 2026-06-17 v7.01r Hyperref driver for pdfTeX
+File: hpdftex.def 2026-10-09 v7.01s Hyperref driver for pdfTeX
 \Fld@listcount=\count294
 \c@bookmark@seq@number=\count295
  (/home/runner/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
@@ -268,11 +268,11 @@ Package rerunfilecheck Info: File `ai-resume.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8631 strings out of 469061
- 135868 string characters out of 5458557
- 574091 words of memory out of 5000000
- 37674 multiletter control sequences out of 15000+600000
- 629923 words of font info for 47 fonts, out of 8000000 for 9000
+ 8631 strings out of 469040
+ 135868 string characters out of 5457101
+ 574176 words of memory out of 5000000
+ 37695 multiletter control sequences out of 15000+600000
+ 630691 words of font info for 47 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,7n,93p,708b,438s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/runner/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
