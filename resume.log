@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.21)  11 NOV 2026 05:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.21)  11 NOV 2026 05:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -252,11 +252,6 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 10.
-
-Overfull \hbox (30.0pt too wide) in paragraph at lines 10--10
-[] 
- []
-
 [1
 
 {/home/runner/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./resume.aux)
@@ -268,15 +263,15 @@ Package rerunfilecheck Info: File `resume.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8630 strings out of 469040
- 135805 string characters out of 5457101
- 574161 words of memory out of 5000000
- 37695 multiletter control sequences out of 15000+600000
+ 8631 strings out of 469040
+ 135823 string characters out of 5457101
+ 574158 words of memory out of 5000000
+ 37696 multiletter control sequences out of 15000+600000
  630691 words of font info for 47 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,7n,93p,705b,438s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/runner/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/runner/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on resume.pdf (1 page, 85079 bytes).
+Output written on resume.pdf (1 page, 85228 bytes).
 PDF statistics:
  52 PDF objects out of 1000 (max. 8388607)
  37 compressed objects within 1 object stream

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.21)  11 NOV 2026 05:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.21)  11 NOV 2026 05:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -252,11 +252,6 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 10.
-
-Overfull \hbox (30.0pt too wide) in paragraph at lines 10--10
-[] 
- []
-
 [1
 
 {/home/runner/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./ai-resume.aux)
@@ -270,7 +265,7 @@ Package rerunfilecheck Info: File `ai-resume.out' has not changed.
 Here is how much of TeX's memory you used:
  8631 strings out of 469040
  135868 string characters out of 5457101
- 574176 words of memory out of 5000000
+ 574173 words of memory out of 5000000
  37695 multiletter control sequences out of 15000+600000
  630691 words of font info for 47 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
