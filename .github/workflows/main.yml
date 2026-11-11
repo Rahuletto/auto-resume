@@ -8,6 +8,10 @@ on:
     - cron: '0 0 * * 0'  # Every Sunday at midnight
   workflow_dispatch:
 
+concurrency:
+  group: resume-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-resume:
     runs-on: ubuntu-latest
@@ -20,6 +24,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
       with:
+        ref: main
         fetch-depth: 1
         token: ${{ secrets.TOKEN }}
 
@@ -38,6 +43,9 @@ jobs:
       with:
         go-version: '1.24' 
         cache: true
+
+    - name: Test
+      run: go test ./...
 
     - name: Run program
       run: go run main.go
@@ -72,11 +80,13 @@ jobs:
 
         # Configure token-based push
         git remote set-url origin https://x-access-token:${{ secrets.PUSH_TOKEN }}@github.com/${{ github.repository }}
-        git pull
 
-        git add .
-        git commit -m 'chore: Updated resume [skip ci]' || echo "No changes to commit"
-        git push
+        git add resume.* ai-resume.* linkedin_data.json
+        if ! git diff --cached --quiet; then
+          git commit -m 'chore: Updated resume [skip ci]'
+          git pull --rebase origin main
+          git push origin HEAD:main
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
 

@@ -1,0 +1,179 @@
+{
+  "firstName": "Rahul",
+  "lastName": "Marban",
+  "username": "rahul-marban",
+  "position": [
+    {
+      "title": "Software Engineer Intern",
+      "companyName": "AskMeIdentity",
+      "location": "Bengaluru",
+      "description": "- Designed and implemented the UI and UX for the LMX platform, delivering 10+ production screens and defining user flows from wireframes to deployed features.\n- Led the redesign of 4+ core modules across the application suite, standardizing layout patterns and improving visual consistency across products.\n- Built a cross platform desktop application using Electron, implementing 3 major feature flows including authentication, content access, and update handling.",
+      "start": {
+        "month": 12,
+        "year": 2025
+      },
+      "end": {
+        "month": 5,
+        "year": 2026
+      }
+    },
+    {
+      "title": "Research Intern",
+      "companyName": "Samsung R&D Institute India - Bangalore",
+      "location": "Chennai",
+      "description": "- Working as a Technical researcher with team of 4 for Developing AI solutions, focusing on innovative approaches and optimizing solutions\n- Collaborating on industry-level as Research Intern in the Samsung PRISM program",
+      "start": {
+        "month": 3,
+        "year": 2025
+      },
+      "end": {
+        "month": 2,
+        "year": 2026
+      }
+    },
+    {
+      "title": "Software Engineer Intern",
+      "companyName": "EmendoAI",
+      "location": "San Francisco Bay Area",
+      "description": "- Collaborated with design and backend teams to deliver updates faster and maintain production quality during UI and logic changes.\n- Authored comprehensive technical documentation for testing workflows and architecture components, improving onboarding speed for new contributors by 30%.\n- Fixed 50+ bugs, including navigation regressions and data overflow issues, directly improving platform stability and preventing user-facing crashes.",
+      "start": {
+        "month": 10,
+        "year": 2025
+      },
+      "end": {
+        "month": 12,
+        "year": 2025
+      }
+    },
+    {
+      "title": "Frontend Developer Intern",
+      "companyName": "SRM Innovation and Incubation Centre",
+      "location": "Chennai, Tamil Nadu, India",
+      "description": "- Rebuilt 60+ pages from scratch to create a faster, more modern, user-friendly and responsive website with smooth animations for 3+ sites.\n- Achieved 25% increase in user engagement and a 10% reduction in bounce rate through optimizations in performance, accessibility, and SEO.\n- Coordinated and maintained version control workflows, ensuring smooth collaboration and code integration across updates.",
+      "start": {
+        "month": 1,
+        "year": 2025
+      },
+      "end": {
+        "month": 7,
+        "year": 2025
+      }
+    }
+  ],
+  "projects": {
+    "items": [
+      {
+        "title": "ClassPro",
+        "description": "- Serving over \"15,000+ monthly active users\" with \"1.1M+ page views per month\", ensuring scalability and stability for the students.\n- Incorporated a Golang fiber server to scrape data which resulted in 40% faster data scraping and fetches reducing the wait time\n- Optimized platform performance to handle peak traffic, ensuring 99.9% uptime and seamless access during critical academic periods."
+      },
+      {
+        "title": "manic",
+        "description": "- Built The fastest framework for React. Delivering sub 150ms cold starts and ~500ms production builds in benchmark suites against Next.js, Remix, Astro, Nuxt, TanStack Start, and Vite-based frameworks\n- Implemented production-grade optimizations including parallel transpilation, OXC-powered compilation/minification, and Bun-native runtime pipelines, enabling lightweight ~400KB production outputs and ultra-fast rebuild performance\n- A full-on Fullstack framework with Hono backend and React frontend, featuring filesystem routing, automatic API route generation, and sub-20ms hot reloads using Bun\u2019s native transpiler"
+      },
+      {
+        "title": "rocket",
+        "description": "- Developed a super-fast, lightweight code editor optimized for performance, achieving ~30% greater RAM efficiency compared to industry standards.\n- Implemented advanced code completion and Language Server Protocol (LSP) support for over 120+ file formats with syntax highlighting.\n- Built an agentic coding assistant capable of autonomously understanding repository context, planning multi-step code changes, and executing file-level edits, reducing repetitive development effort by ~40%."
+      },
+      {
+        "title": "lavalamp",
+        "description": "- An open-source Cloudflare-native coding agent harness enabling AI-assisted software development directly from the terminal.\n- Designed core infrastructure including semantic code indexing, a hash-anchored file editing engine improving edit reliability by 42%, resumable agent sessions, and approval-based command execution.\n- Architected an extensible multi-agent framework with expert subagents and Cloudflare Workers AI integration, providing secure, local-first AI development workflows."
+      },
+      {
+        "title": "bullet",
+        "description": "- Built an agentic AI security platform that reasons over 7+ web application surfaces, generates attack hypotheses, prioritizes high-signal leads, and autonomously executes multi-step tool-calling workflows.\n- Engineered a 25+ phase reconnaissance and vulnerability-validation pipeline covering authentication, SQL injection, XSS, SSRF, business logic, API discovery, and JavaScript analysis.\n- Integrated knowledge-graph reasoning to correlate endpoints, exposed secrets, authentication context, findings, and attack chains into structured security reports."
+      },
+      {
+        "title": "agent-orchestrator",
+        "description": "- Built a recursive orchestration engine supporting multi-stage task pipelines with dynamic agent spawning.\n- Designed execution system enabling N-level task delegation across dependent workflows\n- Implemented asynchronous execution handling multiple concurrent task flows (20+ agents) with state propagation and state persistence using Redis\n- Generates a dependency graph with the agents and follows a master-delegator model in a form of layers in recursive way to complete the goal"
+      }
+    ]
+  },
+  "certifications": [
+    {
+      "name": "MongoDB Associate Developer"
+    },
+    {
+      "name": "Red Hat Enterprise Linux Automation with Ansible (RH294 - RHA) - Ver. 9.0"
+    },
+    {
+      "name": "Samsung PRISM"
+    },
+    {
+      "name": "Red Hat Certified Specialist in Containers"
+    },
+    {
+      "name": "Exploratory Data Analysis for Machine Learning"
+    },
+    {
+      "name": "Machine Learning Onramp"
+    },
+    {
+      "name": "Deep Learning Onramp"
+    },
+    {
+      "name": "AWS Educate Introduction to Generative AI"
+    },
+    {
+      "name": "Database Structures and Management with MySQL"
+    },
+    {
+      "name": "Devshouse'25"
+    },
+    {
+      "name": "Digital Image Processing"
+    },
+    {
+      "name": "Image Processing Onramp"
+    },
+    {
+      "name": "The Great Bengaluru Hackathon"
+    },
+    {
+      "name": "Innofusion'25"
+    },
+    {
+      "name": "Ultron 8.0"
+    },
+    {
+      "name": "Vertex Innovate Organizer"
+    },
+    {
+      "name": "Oracle Cloud Infrastructure 2024 Certified Foundations Associate"
+    },
+    {
+      "name": "Advanced Programming in Swift"
+    },
+    {
+      "name": "Hack Day - First Edition"
+    },
+    {
+      "name": "Supervised Machine Learning: Regression and Classification"
+    }
+  ],
+  "languages": [
+    {
+      "name": "English",
+      "proficiency": "PROFESSIONAL_WORKING"
+    },
+    {
+      "name": "Hindi",
+      "proficiency": "ELEMENTARY"
+    },
+    {
+      "name": "Tamil",
+      "proficiency": "NATIVE_OR_BILINGUAL"
+    }
+  ],
+  "educations": [
+    {
+      "schoolName": "SRM Institute of Science and Technology",
+      "degree": "BTech",
+      "fieldOfStudy": "Computer Science Engineering with AIML",
+      "grade": "9.41",
+      "url": "https://www.linkedin.com/school/s.r.m.-institute-of-science-&-technology-chennai/",
+      "end": {
+        "year": 2027
+      }
+    }
+  ]
+}

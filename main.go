@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
@@ -164,52 +166,105 @@ func fetchGithubData(query string) (*models.GithubResponse, error) {
 	return &data, nil
 }
 
+// Always try live data; a validated snapshot is the fallback, regardless of LOCAL.
 func fetchLinkedinData() (*models.LinkedinProfile, error) {
+	client := &fasthttp.Client{ReadTimeout: 30 * time.Second, WriteTimeout: 30 * time.Second}
+	return fetchLinkedinDataFrom(LinkedinApiUrl, LinkedinDataFile, os.Getenv("LINKEDIN_API_KEY"), client)
+}
+
+func parseLinkedinProfile(body []byte) (*models.LinkedinProfile, error) {
 	var data models.LinkedinProfile
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, fmt.Errorf("invalid LinkedIn JSON: %w", err)
+	}
+	if strings.TrimSpace(data.FirstName) == "" || strings.TrimSpace(data.LastName) == "" ||
+		strings.TrimSpace(data.Username) == "" || len(data.Position) == 0 || len(data.Educations) == 0 {
+		// HTTP 200 can contain an error object or an empty profile. Never publish it.
+		var fields map[string]json.RawMessage
+		_ = json.Unmarshal(body, &fields)
+		keys := make([]string, 0, len(fields))
+		for key := range fields {
+			keys = append(keys, key)
+		}
+		return nil, fmt.Errorf("incomplete LinkedIn profile (name, username, positions and education required; response keys: %q)", keys)
+	}
+	for _, exp := range data.Position {
+		if strings.TrimSpace(exp.Title) == "" || strings.TrimSpace(exp.CompanyName) == "" {
+			return nil, fmt.Errorf("LinkedIn profile contains an empty position")
+		}
+	}
+	for _, edu := range data.Educations {
+		if strings.TrimSpace(edu.SchoolName) == "" {
+			return nil, fmt.Errorf("LinkedIn profile contains an empty education")
+		}
+	}
+	return &data, nil
+}
 
-	if local && fileExists(LinkedinDataFile) {
-		fileData, err := os.ReadFile(LinkedinDataFile)
-		if err != nil {
-			return nil, errors.FileOperationError{Message: fmt.Sprintf("Failed to read LinkedIn cache file: %v", err)}
+func fetchLinkedinDataFrom(apiURL, cachePath, key string, client *fasthttp.Client) (*models.LinkedinProfile, error) {
+	data, liveErr := func() (*models.LinkedinProfile, error) {
+		if strings.TrimSpace(key) == "" {
+			return nil, fmt.Errorf("LINKEDIN_API_KEY is not set")
 		}
-		if err := json.Unmarshal(fileData, &data); err != nil {
-			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse LinkedIn cache file: %v", err)}
-		}
-	} else {
-		key := os.Getenv("LINKEDIN_API_KEY")
-		if key == "" {
-			return nil, errors.ApiError{Message: "LinkedIn API key is not set in environment variables"}
-		}
-
 		req := fasthttp.AcquireRequest()
 		resp := fasthttp.AcquireResponse()
 		defer fasthttp.ReleaseRequest(req)
 		defer fasthttp.ReleaseResponse(resp)
-
-		req.SetRequestURI(fmt.Sprintf("%s?url=%s", LinkedinApiUrl, LinkedinProfileUrl))
+		req.SetRequestURI(apiURL + "?url=" + url.QueryEscape(LinkedinProfileUrl))
 		req.Header.SetMethod("GET")
 		req.Header.Set("x-rapidapi-key", key)
 		req.Header.Set("x-rapidapi-host", "professional-network-data.p.rapidapi.com")
-
-		client := &fasthttp.Client{ReadTimeout: 30 * time.Second, WriteTimeout: 30 * time.Second}
 		if err := client.Do(req, resp); err != nil {
-			return nil, errors.ApiError{Message: fmt.Sprintf("LinkedIn API request failed: %v", err)}
+			return nil, fmt.Errorf("LinkedIn API request failed: %w", err)
 		}
 		if resp.StatusCode() != fasthttp.StatusOK {
-			return nil, errors.ApiError{Message: fmt.Sprintf("LinkedIn API returned non-OK status: %d", resp.StatusCode())}
+			return nil, fmt.Errorf("LinkedIn API returned HTTP %d", resp.StatusCode())
 		}
-
-		if err := json.Unmarshal(resp.Body(), &data); err != nil {
-			return nil, errors.DataParsingError{Message: fmt.Sprintf("Failed to parse LinkedIn API response: %v", err)}
+		return parseLinkedinProfile(resp.Body())
+	}()
+	if liveErr == nil {
+		// Replace atomically only after validation; errors must not corrupt the fallback.
+		if err := saveLinkedinSnapshot(cachePath, data); err != nil {
+			return nil, fmt.Errorf("could not persist validated LinkedIn snapshot: %w", err)
 		}
-
-		if local {
-			cache, _ := json.MarshalIndent(data, "", "  ")
-			_ = os.WriteFile(LinkedinDataFile, cache, 0644)
-		}
+		log.Printf("LinkedIn source: live API (%d positions, %d educations, %d projects)", len(data.Position), len(data.Educations), len(data.Projects.Items))
+		return data, nil
 	}
 
-	return &data, nil
+	log.Printf("LinkedIn live fetch failed: %v; trying snapshot %s", liveErr, cachePath)
+	body, err := os.ReadFile(cachePath)
+	if err != nil {
+		return nil, fmt.Errorf("%v; LinkedIn snapshot unavailable: %w", liveErr, err)
+	}
+	data, err = parseLinkedinProfile(body)
+	if err != nil {
+		return nil, fmt.Errorf("%v; LinkedIn snapshot invalid: %w", liveErr, err)
+	}
+	log.Printf("LinkedIn source: fallback snapshot (%d positions, %d educations, %d projects)", len(data.Position), len(data.Educations), len(data.Projects.Items))
+	return data, nil
+}
+
+func saveLinkedinSnapshot(path string, data *models.LinkedinProfile) error {
+	body, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		return err
+	}
+	f, err := os.CreateTemp(filepath.Dir(path), ".linkedin-snapshot-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(f.Name())
+	if _, err := f.Write(append(body, '\n')); err != nil {
+		f.Close()
+		return err
+	}
+	if err := f.Close(); err != nil {
+		return err
+	}
+	if err := os.Chmod(f.Name(), 0644); err != nil {
+		return err
+	}
+	return os.Rename(f.Name(), path)
 }
 
 func fileExists(filename string) bool {
@@ -327,12 +382,12 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 
 	var experienceEntries []string
 	count := 0
-	
+
 	for _, exp := range linkedinData.Position {
 		if !internPattern.MatchString(exp.Title) {
 			continue
 		}
-	
+
 		start := fmt.Sprintf("%s %d", monthNumberToAbbr(exp.Start.Month),
 			exp.Start.Year)
 		end := "Present"
@@ -340,7 +395,7 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 			end = fmt.Sprintf("%s %d", monthNumberToAbbr(exp.End.Month),
 				exp.End.Year)
 		}
-	
+
 		entry := []string{
 			fmt.Sprintf("\\textbf{%s} \\hfill %s - %s\\\\",
 				cleanData(exp.Title), start, end),
@@ -348,17 +403,16 @@ func updateLatexTemplate(templateFile, outputFile string, showcasePattern *regex
 				cleanData(exp.CompanyName), cleanData(exp.Location)),
 			fmt.Sprintf("\n%s\n", cleanData(exp.Description)),
 		}
-	
+
 		experienceEntries = append(experienceEntries,
 			strings.Join(entry, "\n"))
-	
+
 		count++
-	
+
 		if count == 4 {
 			break
 		}
 	}
-
 
 	// educations
 	var educationEntries []string
