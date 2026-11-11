@@ -11,7 +11,7 @@ on:
 jobs:
   build-resume:
     runs-on: ubuntu-latest
-    timeout-minutes: 3 
+    timeout-minutes: 10
     env:
       LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
       TOKEN: ${{ secrets.TOKEN }}
@@ -55,7 +55,7 @@ jobs:
         fi
         export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
         tlmgr update --self
-        tlmgr install enumitem hyperref xcolor biblatex ragged2e parskip
+        tlmgr install enumitem hyperref xcolor ragged2e parskip
         pdflatex -interaction=nonstopmode -halt-on-error resume.tex
         pdflatex -interaction=nonstopmode -halt-on-error ai-resume.tex
         
