@@ -19,7 +19,7 @@
     },
     {
       "title": "Research Intern",
-      "companyName": "Samsung R&D Institute India - Bangalore",
+      "companyName": "Samsung R\u0026D Institute India - Bangalore",
       "location": "Chennai",
       "description": "- Working as a Technical researcher with team of 4 for Developing AI solutions, focusing on innovative approaches and optimizing solutions\n- Collaborating on industry-level as Research Intern in the Samsung PRISM program",
       "start": {
@@ -46,6 +46,20 @@
       }
     },
     {
+      "title": "Chief Design Officer",
+      "companyName": "Turn2Law",
+      "location": "Chennai, Tamil Nadu, India",
+      "description": "- Led the creative direction for a team of 5+ designers and developers, ensuring alignment with brand vision and user needs.\n-  Transformed the platform’s UI/UX by designing intuitive navigation features, leading to a 20% surge in user engagement and enhanced customer satisfaction metrics based on direct feedback from usability testing sessions.\n- Actively contributing to the development of a newly incubated startup, helping shape its initial product offerings and its branding.",
+      "start": {
+        "month": 11,
+        "year": 2024
+      },
+      "end": {
+        "month": 11,
+        "year": 2025
+      }
+    },
+    {
       "title": "Frontend Developer Intern",
       "companyName": "SRM Innovation and Incubation Centre",
       "location": "Chennai, Tamil Nadu, India",
@@ -58,33 +72,117 @@
         "month": 7,
         "year": 2025
       }
+    },
+    {
+      "title": "Full Stack Software Development Intern",
+      "companyName": "Neugence Technology Pvt Ltd",
+      "location": "Remote",
+      "description": "- Evolved and launched 2 fully functional websites as a frontend developer, ensuring seamless user experiences and adherence to project deadlines.\n- Migrated the entire codebase to Vite, reducing development cycle times by 25%, resulting in faster feature delivery and team productivity\n- Tailored and implemented responsive web designs, increasing user engagement by 38% through refined accessibility and cross-device compatibility.",
+      "start": {
+        "month": 8,
+        "year": 2024
+      },
+      "end": {
+        "month": 2,
+        "year": 2025
+      }
+    },
+    {
+      "title": "User Interface Designer",
+      "companyName": "Dreamnity",
+      "location": "Chennai, Tamil Nadu, India",
+      "description": "Lead the technical direction of the startup with 5+ employees, leading a team to develop Dreamnity and maintain high-quality deliverables.",
+      "start": {
+        "month": 2,
+        "year": 2024
+      },
+      "end": {
+        "month": 8,
+        "year": 2024
+      }
     }
   ],
   "projects": {
     "items": [
       {
-        "title": "ClassPro",
-        "description": "- Serving over \"15,000+ monthly active users\" with \"1.1M+ page views per month\", ensuring scalability and stability for the students.\n- Incorporated a Golang fiber server to scrape data which resulted in 40% faster data scraping and fetches reducing the wait time\n- Optimized platform performance to handle peak traffic, ensuring 99.9% uptime and seamless access during critical academic periods."
+        "title": "Bullet",
+        "description": "- Built an agentic AI security platform that reasons over 7+ web application surfaces, generates attack hypotheses, prioritizes high-signal leads, and autonomously executes multi-step tool-calling workflows.\n- Engineered a 25+ phase reconnaissance and vulnerability-validation pipeline covering authentication, SQL injection, XSS, SSRF, business logic, API discovery, and JavaScript analysis.\n- Integrated knowledge-graph reasoning to correlate endpoints, exposed secrets, authentication context, findings, and attack chains into structured security reports.\n---\nTypescript, Nuclei, BBOT, SQLi"
       },
       {
-        "title": "manic",
-        "description": "- Built The fastest framework for React. Delivering sub 150ms cold starts and ~500ms production builds in benchmark suites against Next.js, Remix, Astro, Nuxt, TanStack Start, and Vite-based frameworks\n- Implemented production-grade optimizations including parallel transpilation, OXC-powered compilation/minification, and Bun-native runtime pipelines, enabling lightweight ~400KB production outputs and ultra-fast rebuild performance\n- A full-on Fullstack framework with Hono backend and React frontend, featuring filesystem routing, automatic API route generation, and sub-20ms hot reloads using Bun\u2019s native transpiler"
+        "title": "Lavalamp",
+        "description": "- An open-source Cloudflare-native coding agent harness enabling AI-assisted software development directly from the terminal.\n- Designed core infrastructure including semantic code indexing, a hash-anchored file editing engine improving edit reliability by 42%, resumable agent sessions, and approval-based command execution.\n- Architected an extensible multi-agent framework with expert subagents and Cloudflare Workers AI integration, providing secure, local-first AI development workflows.\n---\nAgentic AI, Typescript, Workers AI, Flue"
       },
       {
-        "title": "rocket",
-        "description": "- Developed a super-fast, lightweight code editor optimized for performance, achieving ~30% greater RAM efficiency compared to industry standards.\n- Implemented advanced code completion and Language Server Protocol (LSP) support for over 120+ file formats with syntax highlighting.\n- Built an agentic coding assistant capable of autonomously understanding repository context, planning multi-step code changes, and executing file-level edits, reducing repetitive development effort by ~40%."
+        "title": "Manic",
+        "description": "- Built The fastest framework for React. Delivering sub 150ms cold starts and ~500ms production builds in benchmark suites against Next.js, Remix, Astro, Nuxt, TanStack Start, and Vite-based frameworks\n- Implemented production-grade optimizations including parallel transpilation, OXC-powered compilation/minification, and Bun-native runtime pipelines, enabling lightweight ~400KB production outputs and ultra-fast rebuild performance\n- A full-on Fullstack framework with Hono backend and React frontend, featuring filesystem routing, automatic API route generation, and sub-20ms hot reloads using Bun’s native transpiler\n---\nTypeScript, React, Hono, Bun, OXC"
       },
       {
-        "title": "lavalamp",
-        "description": "- An open-source Cloudflare-native coding agent harness enabling AI-assisted software development directly from the terminal.\n- Designed core infrastructure including semantic code indexing, a hash-anchored file editing engine improving edit reliability by 42%, resumable agent sessions, and approval-based command execution.\n- Architected an extensible multi-agent framework with expert subagents and Cloudflare Workers AI integration, providing secure, local-first AI development workflows."
-      },
-      {
-        "title": "bullet",
-        "description": "- Built an agentic AI security platform that reasons over 7+ web application surfaces, generates attack hypotheses, prioritizes high-signal leads, and autonomously executes multi-step tool-calling workflows.\n- Engineered a 25+ phase reconnaissance and vulnerability-validation pipeline covering authentication, SQL injection, XSS, SSRF, business logic, API discovery, and JavaScript analysis.\n- Integrated knowledge-graph reasoning to correlate endpoints, exposed secrets, authentication context, findings, and attack chains into structured security reports."
+        "title": "Formie",
+        "description": "- An AI powered extension that autofills with answers in google forms\n- Formie extracts and reads through all the questions on a form and uses Gemini to solve the problem\n- Supporting Manifest V3 and Sidepanel features\n---\nTypescript, React, Plasmo, Javascript"
       },
       {
         "title": "agent-orchestrator",
-        "description": "- Built a recursive orchestration engine supporting multi-stage task pipelines with dynamic agent spawning.\n- Designed execution system enabling N-level task delegation across dependent workflows\n- Implemented asynchronous execution handling multiple concurrent task flows (20+ agents) with state propagation and state persistence using Redis\n- Generates a dependency graph with the agents and follows a master-delegator model in a form of layers in recursive way to complete the goal"
+        "description": "- Built a recursive orchestration engine supporting multi-stage task pipelines with dynamic agent spawning.\n- Designed execution system enabling N-level task delegation across dependent workflows\n- Implemented asynchronous execution handling multiple concurrent task flows (20+ agents) with state propagation and state persistence using Redis\n- Generates a dependency graph with the agents and follows a master-delegator model in a form of layers in recursive way to complete the goal\n---\nTypescript, Node.js, Redis"
+      },
+      {
+        "title": "Codelens",
+        "description": "- Analyses the code for any bugs or security vulnerabilities\n- Helps to review the code without any human reviewer by scanning the code with Gemini\n---\nTypescript, React, Vite"
+      },
+      {
+        "title": "Brocode",
+        "description": "- A message encoder that encodes to a wave buffer audio that can be decoded later\n- Useful to transmit secrets over audio without any knowledge that it is an encoded secret\n- Mimics the sound of a dishwasher \n---\nTypescript, Remix, Nodejs"
+      },
+      {
+        "title": "ClassPro",
+        "description": "- Serving over \"15,000+ monthly active users\" with \"1.1M+ page views per month\", ensuring scalability and stability for the students.\n- Incorporated a Golang fiber server to scrape data which resulted in 40% faster data scraping and fetches reducing the wait time\n- Optimized platform performance to handle peak traffic, ensuring 99.9% uptime and seamless access during critical academic periods.\n---\nTypescript, React, Go, NextJS, Supabase"
+      },
+      {
+        "title": "Kalvikaram",
+        "description": "- Trained our RAG model with over 80,000+ chunks of Tamilnadu SSLC textbooks\n- Designed and Developed the UI Design with over 50+ textbooks as resources\n- Supporting and helping students who studied in Tamil medium by supporting Tamil, English and even Romanised Tamil"
+      },
+      {
+        "title": "Healthalyze",
+        "description": "- Made UI and animations making it engaging\n- Implemented Graph system to identify the pattern and the trends based on heart strokes\n- Fine tuned a CNN model in Python with 97% accuracy"
+      },
+      {
+        "title": "Researchfolio",
+        "description": "- Uses Github API to automate few data like Projects, social links, bio and etc..\n- Made the portfolio Responsive and fluid and published as a template"
+      },
+      {
+        "title": "gitMyStat",
+        "description": "- Accelerated SVG generation by 20% using Satori in NextJS, achieving render times \"under 500 milliseconds\" and outpacing competitors.\n- Built solutions that enables users to assemble and fine-tune GitHub profile designs and statistics, boosting user engagement by 20%.\n- Optimized backend architecture to handle 500+ concurrent requests, ensuring zero downtime during peak usage\n---\nTypescript, React, NextJS, Satori"
+      },
+      {
+        "title": "Rocket",
+        "description": "- Developed a super-fast, lightweight code editor optimized for performance, achieving ~30% greater RAM efficiency compared to industry standards.\n- Implemented advanced code completion and Language Server Protocol (LSP) support for over 120+ file formats with syntax highlighting.\n- Built an agentic coding assistant capable of autonomously understanding repository context, planning multi-step code changes, and executing file-level edits, reducing repetitive development effort by ~40%.\n---\nTauri, React, Typescript, Rust"
+      },
+      {
+        "title": "sloth.",
+        "description": "Sloth is a Study companion who listen to your lectures and write detailed notes, flashcards, and quizzes. Helping you ace the exams. Also complies with all University guidelines and honor code."
+      },
+      {
+        "title": "Better Lab",
+        "description": "A better alternative to SRM-Elab. Efficient, Fast, Zippy as hecc"
+      },
+      {
+        "title": "Stacx",
+        "description": "✏️ Stacx is a straightforward no-code website builder crafted with GrapesJS and NextJS, leveraging TypeScript for robust development."
+      },
+      {
+        "title": "lirics",
+        "description": "Lirics is a self-hosting service that brings real-time Spotify lyrics to your screen with a beautiful, Apple Music-like aesthetic."
+      },
+      {
+        "title": "CodeBoard",
+        "description": "The future of code sharing platform. A community-driven code sharing platform thats built by developers, for developers.\nhttps://codeboard.tech"
+      },
+      {
+        "title": "Typwrite",
+        "description": "A type-testing website thats aesthetically pleasing with a sweet touch of that old retro style."
+      },
+      {
+        "title": "GradeX",
+        "description": "A SRM CGPA calculator and Required Mark calculator to plan about your academic comeback (which will never happen).\n\nhttps://gradex.vercel.app"
       }
     ]
   },
@@ -105,7 +203,7 @@
       "name": "Exploratory Data Analysis for Machine Learning"
     },
     {
-      "name": "Machine Learning Onramp"
+      "name": " Machine Learning Onramp"
     },
     {
       "name": "Deep Learning Onramp"
@@ -138,7 +236,7 @@
       "name": "Vertex Innovate Organizer"
     },
     {
-      "name": "Oracle Cloud Infrastructure 2024 Certified Foundations Associate"
+      "name": " Oracle Cloud Infrastructure 2024 Certified Foundations Associate"
     },
     {
       "name": "Advanced Programming in Swift"
@@ -147,7 +245,7 @@
       "name": "Hack Day - First Edition"
     },
     {
-      "name": "Supervised Machine Learning: Regression and Classification"
+      "name": "Supervised Machine Learning: Regression and Classification "
     }
   ],
   "languages": [
@@ -166,14 +264,20 @@
   ],
   "educations": [
     {
-      "schoolName": "SRM Institute of Science and Technology",
-      "degree": "BTech",
+      "schoolName": "SRM Institute of Science and Technology (SRMIST)",
+      "degree": "Bachelor of Technology - BTech",
       "fieldOfStudy": "Computer Science Engineering with AIML",
       "grade": "9.41",
-      "url": "https://www.linkedin.com/school/s.r.m.-institute-of-science-&-technology-chennai/",
+      "url": "https://www.linkedin.com/school/s.r.m.-institute-of-science-\u0026-technology-chennai/",
+      "start": {
+        "month": 8,
+        "year": 2023
+      },
       "end": {
+        "month": 5,
         "year": 2027
       }
     }
-  ]
+  ],
+  "summary": "I’m Rahul Marban, a self-taught full-stack developer building on the web since 2020.My work spans developer tools, AI, web recon, and web applications, always with the goal of solving real problems through simple, well-crafted software.I’ve built solutions that scale from 0 to 2M page visits and 20k monthly active users, the fastest framework on React, a full agentic human-in-the-loop reconnaissance tool, and even Swift-based macOS apps. Along the way I've shipped for teams at Samsung with AI research.I care about software that's fast, clean and actually useful."
 }
