@@ -65,10 +65,13 @@
 % \printaddress is used to style an address line (given as input)
 \def \printaddress #1{
   \begingroup
+    % \centering redefines \\, so set the separator after it. A centered
+    % paragraph also wraps; \centerline is an \hbox to \hsize and cannot,
+    % so enough address entries overflow the right margin.
+    \centering
     \def \\ {\addressSep\ }
-    \centerline{#1}
+    #1\par
   \endgroup
-  \par
   \addressskip
 }
 
